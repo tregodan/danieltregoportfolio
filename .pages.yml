@@ -97,3 +97,35 @@ content:
               - name: shutter
                 label: Shutter speed
                 type: string
+
+  - name: high-scores
+    label: High Scores
+    type: file
+    path: content/high-scores.json
+    fields:
+      - name: entries
+        label: High Score Entries
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{name} — {category}"
+        fields:
+          - name: name
+            label: Title
+            type: string
+            required: true
+          - name: category
+            label: Category
+            type: select
+            options:
+              values: [PHOTO, DESIGN, WEB, TEACH, RESEARCH, OTHER]
+          - name: year
+            label: Date or year
+            type: string
+          - name: description
+            label: Description
+            type: text
+          - name: url
+            label: External link (optional)
+            type: string

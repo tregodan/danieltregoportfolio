@@ -26,7 +26,7 @@
   </main>
   <script>
     // EDIT THIS LIST to update the portfolio. A future CMS/Google Sheet can feed this same structure.
-    const scoreEntries=[
+    const fallbackEntries=[
       {name:'Night Studies',category:'PHOTO',year:'2025',description:'A photographic study of artificial light and late-hour movement.',href:'viewmaster-prototype.html'},
       {name:'Soft Errors',category:'PHOTO',year:'2024',description:'Color, memory, and familiar places out of sequence.',href:'viewmaster-prototype.html'},
       {name:'Field Notes',category:'PHOTO',year:'2023',description:'Edges, weather, and things that hold still.',href:'viewmaster-prototype.html'},
@@ -38,11 +38,12 @@
       {name:'The Art of Archaeology',category:'RESEARCH',year:'2022',description:'MSU story about Daniel Trego’s documentation and exhibition work in Greece.',href:'https://eeb.msu.edu/news/exhibit-explored-the-art-of-archaeology.aspx'},
       {name:'Selected Experiments',category:'OTHER',year:'2024',description:'Small studies, objects, and unfinished ideas.',href:'viewmaster-prototype.html'}
     ];
-    let category='ALL',selected=0; const $=s=>document.querySelector(s); function visible(){return scoreEntries.filter(x=>category==='ALL'||x.category===category)}
-    function scoreRow(x,i){const code=x.code||x.name.replace(/[^A-Z]/gi,'').slice(0,3).toUpperCase(); return '<a class="score '+(i===selected?'active':'')+'" data-index="'+i+'" href="'+x.href+'" target="_blank" rel="noreferrer"><span class="rank">'+String(i+1).padStart(2,'0')+'</span><span><strong>'+x.name+'</strong><br><span class="category">'+x.category+' // '+x.description+'</span></span><span class="year">'+x.year+'</span></a>';}
+    let scoreEntries=fallbackEntries,category='ALL',selected=0; const $=s=>document.querySelector(s); function visible(){return scoreEntries.filter(x=>category==='ALL'||x.category===category)}
+    function scoreRow(x,i){const tag=x.url?'a':'button', link=x.url?' href="'+x.url+'" target="_blank" rel="noreferrer"':' type="button" title="Select '+x.name+'"'; return '<'+tag+' class="score '+(i===selected?'active':'')+'" data-index="'+i+'"'+link+'><span class="rank">'+String(i+1).padStart(2,'0')+'</span><span><strong>'+x.name+'</strong><br><span class="category">'+x.category+' // '+x.description+'</span></span><span class="year">'+x.year+'</span></'+tag+'>';}
     function render(){const items=visible(); const title=category==='ALL'?'HIGH SCORES':category; $('#categoryLabel').textContent=category==='ALL'?'ALL WORK':category; $('#screenTitle').textContent=title; document.querySelectorAll('[data-category]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.category===category))); $('#scores').innerHTML=items.map((x,i)=>scoreRow(x,i)).join(''); document.querySelectorAll('#scores .score').forEach((row,i)=>row.onclick=()=>{selected=i;render();}); const active=$('#scores .score.active'); if(active) active.setAttribute('aria-current','true');}
     function move(delta){const max=visible().length;selected=(selected+delta+max)%max;render();}
     document.querySelectorAll('[data-category]').forEach(button=>button.onclick=()=>{category=button.dataset.category;selected=0;render()}); $('#joystick').onclick=()=>move(1); document.addEventListener('keydown',e=>{if(e.key==='ArrowDown'||e.key==='ArrowRight')move(1);if(e.key==='ArrowUp'||e.key==='ArrowLeft')move(-1);if(e.key==='Enter'){const item=visible()[selected];if(item) alert(item.name+'\\n\\n'+item.description);}}); render();
+    fetch('content/high-scores.json',{cache:'no-store'}).then(response=>response.ok?response.json():Promise.reject()).then(data=>{if(Array.isArray(data.entries)){scoreEntries=data.entries;selected=0;render();}}).catch(()=>{});
   </script>
 </body>
 </html>
