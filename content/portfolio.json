@@ -47,7 +47,15 @@
           "aperture": "4.0",
           "shutter": "1/500"
         },
-        {}
+        {
+          "src": "/media/photo.jpg",
+          "caption": "El Capitan across the valley through the smoke",
+          "date": "2019",
+          "location": "California",
+          "iso": "160",
+          "aperture": "9.0",
+          "shutter": "1/400"
+        }
       ]
     },
     {}
