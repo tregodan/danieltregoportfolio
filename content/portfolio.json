@@ -1,0 +1,81 @@
+{
+  "packs": [
+    {
+      "id": "night-studies",
+      "title": "Night Studies",
+      "category": "PHOTO",
+      "description": "Artificial light, empty streets, and late-hour movement.",
+      "discs": ["DISC_01"]
+    },
+    {
+      "id": "soft-errors",
+      "title": "Soft Errors",
+      "category": "PHOTO",
+      "description": "Small glitches in familiar places.",
+      "discs": ["DISC_02"]
+    },
+    {
+      "id": "field-notes",
+      "title": "Field Notes",
+      "category": "PHOTO",
+      "description": "Edges, weather, and things that hold still.",
+      "discs": ["DISC_03"]
+    }
+  ],
+  "discs": [
+    {
+      "id": "DISC_01",
+      "pack": "night-studies",
+      "title": "Night Studies",
+      "volume": 1,
+      "location": "Detroit, MI",
+      "description": "Artificial light, empty streets, and late-hour movement. A small archive of the city after closing.",
+      "date": "2023",
+      "images": [
+        {"src":"https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1200&q=85","caption":"After closing"},
+        {"src":"https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1200&q=85","caption":"Downtown, 22:41"},
+        {"src":"https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=1200&q=85","caption":"Last light"},
+        {"src":"https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=1200&q=85","caption":"Northbound"},
+        {"src":"https://images.unsplash.com/photo-1514924013411-cbf25faa35bb?auto=format&fit=crop&w=1200&q=85","caption":"Underpass"},
+        {"src":"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=85","caption":"One more mile"},
+        {"src":"https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=1200&q=85","caption":"Green room"}
+      ]
+    },
+    {
+      "id": "DISC_02",
+      "pack": "soft-errors",
+      "title": "Soft Errors",
+      "volume": 1,
+      "location": "Various / 2024–26",
+      "description": "Small glitches in familiar places: color, memory, and the quiet evidence of a day out of sequence.",
+      "date": "2024",
+      "images": [
+        {"src":"https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=85","caption":"Desk light"},
+        {"src":"https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1200&q=85","caption":"Empty office"},
+        {"src":"https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&w=1200&q=85","caption":"Blue hour"},
+        {"src":"https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1200&q=85","caption":"Open road"},
+        {"src":"https://images.unsplash.com/photo-1524230572899-a752b3835840?auto=format&fit=crop&w=1200&q=85","caption":"Found object"},
+        {"src":"https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=85","caption":"Soft focus"},
+        {"src":"https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&w=1200&q=85","caption":"Exit sign"}
+      ]
+    },
+    {
+      "id": "DISC_03",
+      "pack": "field-notes",
+      "title": "Field Notes",
+      "volume": 1,
+      "location": "Michigan / 2023–25",
+      "description": "A slower collection of edges, weather, and the things that hold still long enough to be noticed.",
+      "date": "2023",
+      "images": [
+        {"src":"https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1200&q=85","caption":"Field edge"},
+        {"src":"https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1200&q=85","caption":"Low canopy"},
+        {"src":"https://images.unsplash.com/photo-1473445361085-b9a07f55608b?auto=format&fit=crop&w=1200&q=85","caption":"After rain"},
+        {"src":"https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=1200&q=85","caption":"Tall grass"},
+        {"src":"https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1200&q=85","caption":"North line"},
+        {"src":"https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=85","caption":"Open water"},
+        {"src":"https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1200&q=85","caption":"Last frame"}
+      ]
+    }
+  ]
+}
