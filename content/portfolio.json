@@ -4,41 +4,22 @@
       "id": "landscape",
       "title": "Landscape",
       "category": "PHOTO",
-      "discs": [
-        "DISC_1"
-      ]
-    },
-    {
-      "id": "soft-errors",
-      "title": "Soft Errors",
-      "category": "PHOTO",
-      "description": "Small glitches in familiar places.",
-      "discs": [
-        "DISC_02"
-      ]
-    },
-    {
-      "id": "field-notes",
-      "title": "Field Notes",
-      "category": "PHOTO",
-      "description": "Edges, weather, and things that hold still.",
-      "discs": [
-        "DISC_03"
-      ]
+      "discs": ["DISC_01"]
     }
   ],
   "discs": [
     {
       "id": "DISC_01",
-      "pack": "yosemite",
+      "pack": "landscape",
       "title": "Yosemite",
       "volume": 1,
+      "orientation": "landscape",
       "location": "California",
       "date": "2019",
       "description": "Yosemite during summer wildfire season",
       "images": [
         {
-          "src": "/media/Screenshot 2026-10-30 at 1.38.55 PM.png",
+          "src": "/media/public/screenshot-2026-10-30-133855.png",
           "caption": "El Cap",
           "date": "2019",
           "location": "Yosemite, California",
@@ -47,16 +28,19 @@
           "shutter": "1/500"
         },
         {
-          "src": "/media/photo.jpg",
+          "src": "/media/public/photo.jpg",
           "caption": "El Capitan across the valley through the smoke",
           "date": "2019",
           "location": "California",
           "iso": "160",
           "aperture": "9.0",
           "shutter": "1/400"
-        }
+        },
+        {"src": "https://lightroom.adobe.com/v2c/spaces/20f3749564af4d5891d634207e9524a8/assets/2dfdaa4f326c1031d0dbb80ce38da1e1/revisions/0c1457df147144f192975f9d8b587bfc/renditions/0b5a9b4a11e2bb9e23101cffc7efb5c8"},
+        {"src": "https://lightroom.adobe.com/v2c/spaces/20f3749564af4d5891d634207e9524a8/assets/bc410c84d31a55037b6f0e64664bea4a/revisions/48da9f14558e4c90a21f67680caf4a43/renditions/8b8ef38d32059e74b7d482e64128a9b1"},
+        {"src": "https://lightroom.adobe.com/v2c/spaces/20f3749564af4d5891d634207e9524a8/assets/60a4924c25270d2489d62690e356e9e5/revisions/dcfb3e447d3a4af5978ebc9a07300dbe/renditions/da6a97b8d0f80324cea491ac40bd04a2"},
+        {"src": "https://lightroom.adobe.com/v2c/spaces/20f3749564af4d5891d634207e9524a8/assets/297bd16231a3e81fcebc278174148c0b/revisions/acc6be5fddb0482eacfa20c3ae91c336/renditions/184592e18f2f9482633133987b53f830"}
       ]
-    },
-    {}
+    }
   ]
 }
