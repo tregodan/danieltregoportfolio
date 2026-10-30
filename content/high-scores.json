@@ -1,0 +1,14 @@
+{
+  "entries": [
+    {"name":"Night Studies","category":"PHOTO","year":"2025","description":"A photographic study of artificial light and late-hour movement."},
+    {"name":"Soft Errors","category":"PHOTO","year":"2024","description":"Color, memory, and familiar places out of sequence."},
+    {"name":"Field Notes","category":"PHOTO","year":"2023","description":"Edges, weather, and things that hold still."},
+    {"name":"Accessibility Studio","category":"DESIGN","year":"2026","description":"Tools for making complex systems easier to see and use."},
+    {"name":"Educational Media Design Specialist","category":"WEB","year":"MSU","description":"Official profile: video, audio production, web design, and digital storytelling.","url":"https://edtech.cal.msu.edu/the-team/daniel-trego/"},
+    {"name":"Author Archive // 17 Articles","category":"TEACH","year":"MSU","description":"Teaching resources and technical resources by Daniel Trego.","url":"https://edtech.cal.msu.edu/author/tregodan/"},
+    {"name":"Innovations in Teaching the Arts Online","category":"TEACH","year":"2020","description":"MSU C4I presentation and contributor profile.","url":"https://c4i.msu.edu/wp-content/uploads/sites/14/2022/05/2020.12.7-Newsletter.pdf"},
+    {"name":"MSU Author Archive // 17 Articles","category":"RESEARCH","year":"MSU","description":"Published teaching and technical articles by Daniel Trego.","url":"https://edtech.cal.msu.edu/author/tregodan/"},
+    {"name":"The Art of Archaeology","category":"RESEARCH","year":"2022","description":"MSU story about Daniel Trego’s documentation and exhibition work in Greece.","url":"https://eeb.msu.edu/news/exhibit-explored-the-art-of-archaeology.aspx"},
+    {"name":"Selected Experiments","category":"OTHER","year":"2024","description":"Small studies, objects, and unfinished ideas."}
+  ]
+}
