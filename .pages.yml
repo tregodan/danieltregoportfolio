@@ -56,6 +56,11 @@ content:
             label: Title
             type: string
             required: true
+          - name: orientation
+            label: Disc orientation
+            type: select
+            options:
+              values: [landscape, portrait, square]
           - name: volume
             label: Volume
             type: number
