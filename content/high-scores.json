@@ -1,52 +1,61 @@
 {
-  "entries": [
+  "categories": [
     {
-      "name": "Sarka Journal Publication",
-      "category": "PHOTO",
-      "year": "2025",
-      "description": "A photographic collaboration with ceramic artist Angeliki Stamatakou",
-      "url": "https://sarkapublishing.com/angeliki-stamatakou-daniel-trego"
+      "id": "photo",
+      "label": "PHOTO",
+      "entries": []
     },
     {
-      "name": "Educational Media Design Specialist",
-      "category": "WEB",
-      "year": "MSU",
-      "description": "Official profile: video, audio production, web design, and digital storytelling.",
-      "url": "https://edtech.cal.msu.edu/the-team/daniel-trego/"
+      "id": "design",
+      "label": "DESIGN",
+      "entries": []
     },
     {
-      "name": "Author Archive // 17 Articles",
-      "category": "TEACH",
-      "year": "MSU",
-      "description": "Teaching resources and technical resources by Daniel Trego.",
-      "url": "https://edtech.cal.msu.edu/author/tregodan/"
+      "id": "teach",
+      "label": "TEACH",
+      "entries": []
     },
     {
-      "name": "Innovations in Teaching the Arts Online",
-      "category": "TEACH",
-      "year": "2020",
-      "description": "MSU C4I presentation and contributor profile.",
-      "url": "https://c4i.msu.edu/wp-content/uploads/sites/14/2022/05/2020.12.7-Newsletter.pdf"
+      "id": "research",
+      "label": "RESEARCH",
+      "entries": [
+        {
+          "title": "Google Scholar — Daniel Trego",
+          "url": "https://scholar.google.com/citations?user=kDCYr2EAAAAJ&hl=en",
+          "description": "Published articles and citations"
+        },
+        {
+          "title": "Mending Broken Relationships Beyond the Border",
+          "url": "https://celta.msu.edu/2017-2-21-mending-broken-relationships-beyond-the-border/",
+          "description": "MSU CELTA feature"
+        },
+        {
+          "title": "Innovative Instruction in MSU Courses",
+          "url": "https://msutoday.msu.edu/news/2024/02/innovative-instruction-in-msu-courses",
+          "description": "MSU Today"
+        }
+      ]
     },
     {
-      "name": "MSU Author Archive // 17 Articles",
-      "category": "RESEARCH",
-      "year": "MSU",
-      "description": "Published teaching and technical articles by Daniel Trego.",
-      "url": "https://edtech.cal.msu.edu/author/tregodan/"
-    },
-    {
-      "name": "The Art of Archaeology",
-      "category": "RESEARCH",
-      "year": "2022",
-      "description": "MSU story about Daniel Trego’s documentation and exhibition work in Greece.",
-      "url": "https://eeb.msu.edu/news/exhibit-explored-the-art-of-archaeology.aspx"
-    },
-    {
-      "name": "Selected Experiments",
-      "category": "OTHER",
-      "year": "2024",
-      "description": "Small studies, objects, and unfinished ideas."
+      "id": "web",
+      "label": "WEB",
+      "entries": [
+        {
+          "title": "Sketchfab — TregoDan Models",
+          "url": "https://sketchfab.com/tregodan/models",
+          "description": "3D work"
+        },
+        {
+          "title": "AR Experience",
+          "url": "https://tregodan.msu.domains/digest/ar-experience/",
+          "description": "Augmented-reality project"
+        },
+        {
+          "title": "Matterport — Spatial Experience",
+          "url": "https://my.matterport.com/show/?m=7xo2mLxwijs",
+          "description": "Interactive 3D space"
+        }
+      ]
     }
   ]
 }
