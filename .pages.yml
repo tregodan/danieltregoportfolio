@@ -20,9 +20,11 @@ content:
           - name: id
             label: Pack ID
             type: string
+            required: true
           - name: title
             label: Title
             type: string
+            required: true
           - name: category
             label: Category
             type: select
@@ -46,12 +48,14 @@ content:
           - name: id
             label: Disc ID
             type: string
+            required: true
           - name: pack
             label: Pack ID
             type: string
           - name: title
             label: Title
             type: string
+            required: true
           - name: volume
             label: Volume
             type: number
