@@ -62,6 +62,9 @@ content:
           - name: location
             label: Location
             type: string
+          - name: format
+            label: Format
+            type: string
           - name: date
             label: Date
             type: string
