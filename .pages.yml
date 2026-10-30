@@ -1,0 +1,95 @@
+media:
+  input: media
+  output: /media
+  categories: [image]
+
+content:
+  - name: portfolio
+    label: Portfolio
+    type: file
+    path: content/portfolio.json
+    fields:
+      - name: packs
+        label: Disc Packs
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{title}"
+        fields:
+          - name: id
+            label: Pack ID
+            type: string
+          - name: title
+            label: Title
+            type: string
+          - name: category
+            label: Category
+            type: select
+            options:
+              values: [PHOTO, DESIGN, WEB, TEACH, RESEARCH, OTHER]
+          - name: description
+            label: Description
+            type: text
+          - name: discs
+            label: Disc IDs
+            type: string
+            list: true
+      - name: discs
+        label: Discs
+        type: object
+        list:
+          collapsible:
+            collapsed: true
+            summary: "{id} — {title}"
+        fields:
+          - name: id
+            label: Disc ID
+            type: string
+          - name: pack
+            label: Pack ID
+            type: string
+          - name: title
+            label: Title
+            type: string
+          - name: volume
+            label: Volume
+            type: number
+          - name: location
+            label: Location
+            type: string
+          - name: date
+            label: Date
+            type: string
+          - name: description
+            label: Description
+            type: text
+          - name: images
+            label: Frames
+            type: object
+            list:
+              collapsible:
+                collapsed: true
+                summary: "Frame {index}: {caption}"
+            fields:
+              - name: src
+                label: Image
+                type: image
+              - name: caption
+                label: Caption
+                type: string
+              - name: date
+                label: Date
+                type: string
+              - name: location
+                label: Location
+                type: string
+              - name: iso
+                label: ISO
+                type: string
+              - name: aperture
+                label: Aperture
+                type: string
+              - name: shutter
+                label: Shutter speed
+                type: string
