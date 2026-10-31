@@ -3,10 +3,7 @@
     {
       "id": "landscape",
       "title": "Landscape",
-      "category": "PHOTO",
-      "discs": [
-        "DISC_01"
-      ]
+      "category": "PHOTO"
     }
   ],
   "discs": [
