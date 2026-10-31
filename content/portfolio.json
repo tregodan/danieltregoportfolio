@@ -19,7 +19,28 @@
       "location": "California",
       "date": "2019",
       "description": "Yosemite during summer wildfire season",
+      "mediaSource": "adobe_album",
+      "adobeAlbumUrl": "https://adobe.ly/4A4yt4Y",
+      "adobeFrameCount": 7,
       "images": [
+        {
+          "caption": "El Cap",
+          "date": "2019",
+          "location": "Yosemite, California",
+          "iso": "125",
+          "aperture": "4.0",
+          "shutter": "1/500",
+          "src": "/media/public/screenshot-2026-10-30-133855.png"
+        },
+        {
+          "caption": "El Capitan across the valley through the smoke",
+          "date": "2019",
+          "location": "California",
+          "iso": "160",
+          "aperture": "9.0",
+          "shutter": "1/400",
+          "src": "/media/public/photo.jpg"
+        },
         {
           "src": "https://lightroom.adobe.com/v2c/spaces/20f3749564af4d5891d634207e9524a8/assets/2dfdaa4f326c1031d0dbb80ce38da1e1/revisions/0c1457df147144f192975f9d8b587bfc/renditions/0b5a9b4a11e2bb9e23101cffc7efb5c8"
         },
