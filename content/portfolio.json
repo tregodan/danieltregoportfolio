@@ -4,6 +4,11 @@
       "id": "landscape",
       "title": "Landscape",
       "category": "PHOTO"
+    },
+    {
+      "id": "bronze",
+      "title": "Bronze",
+      "category": "PHOTO"
     }
   ],
   "discs": [
@@ -66,6 +71,89 @@
       ],
       "albumLinked": true,
       "adobeAlbumId": "73b836bbe0da49fda43cf467080055c8"
+    },
+    {
+      "id": "DISC_02",
+      "title": "Bronze",
+      "images": [
+        {
+          "adobeAssetId": "90e5994a60154c5bb4a29e028b94b6f9",
+          "date": "2026",
+          "src": "https://lightroom.adobe.com/v2c/spaces/abe5667b5dc54ec59bb265fc7975c265/assets/90e5994a60154c5bb4a29e028b94b6f9/revisions/d63559be396fee61408173ab4670ffa0/renditions/a41a66023fbe5a732ee5a0cecd96d3ca"
+        },
+        {
+          "adobeAssetId": "0b21fea8b8a6416abce04274b2c2e17f",
+          "date": "2026",
+          "src": "https://lightroom.adobe.com/v2c/spaces/abe5667b5dc54ec59bb265fc7975c265/assets/0b21fea8b8a6416abce04274b2c2e17f/revisions/4cc1f81965eba900e03083c669054415/renditions/c30553601c494ea8b5f6c5b6ce8e7b60"
+        },
+        {
+          "adobeAssetId": "08bdaca9f2a24abc8a3f167cd4466748",
+          "date": "2026",
+          "src": "https://lightroom.adobe.com/v2c/spaces/abe5667b5dc54ec59bb265fc7975c265/assets/08bdaca9f2a24abc8a3f167cd4466748/revisions/f1d99b19cecdb574119e6d2acb8e5137/renditions/5cad86d301b4e6381cd6367c0cb9282b"
+        },
+        {
+          "adobeAssetId": "d986bdc0ecdd4f75bab10769f1703f34",
+          "date": "2026",
+          "src": "https://lightroom.adobe.com/v2c/spaces/abe5667b5dc54ec59bb265fc7975c265/assets/d986bdc0ecdd4f75bab10769f1703f34/revisions/2696106bf7f33a6b56f86b661a30d283/renditions/7a0149354057ab44cae001bd39d9deac"
+        },
+        {
+          "adobeAssetId": "0da6f7bf5af443ac9ca42710f9e5d4d1",
+          "date": "2026",
+          "src": "https://lightroom.adobe.com/v2c/spaces/abe5667b5dc54ec59bb265fc7975c265/assets/0da6f7bf5af443ac9ca42710f9e5d4d1/revisions/408766e23845cf3a8f393837fafd6fdf/renditions/a1cc0661abbd9d4f8fa86abf08668950"
+        },
+        {
+          "adobeAssetId": "11ba852f0a194246b223788c4faa696e",
+          "date": "2026",
+          "src": "https://lightroom.adobe.com/v2c/spaces/abe5667b5dc54ec59bb265fc7975c265/assets/11ba852f0a194246b223788c4faa696e/revisions/687afd2e83d118fff8495db344d0154a/renditions/a27c5e4342a68da1979fd2bc67fab2a8"
+        },
+        {
+          "adobeAssetId": "ecff282baf10418788f9c402b079846b",
+          "date": "2026",
+          "src": "https://lightroom.adobe.com/v2c/spaces/abe5667b5dc54ec59bb265fc7975c265/assets/ecff282baf10418788f9c402b079846b/revisions/1ce3b06d2e8b7112fd32924b97a60a4a/renditions/f91e7661071117438e235c64dba59c91"
+        },
+        {
+          "adobeAssetId": "7ce1f47cb612414abd40a2246c929803",
+          "date": "2026",
+          "src": "https://lightroom.adobe.com/v2c/spaces/abe5667b5dc54ec59bb265fc7975c265/assets/7ce1f47cb612414abd40a2246c929803/revisions/3390060e7c5c221c0a68e1b550d7e907/renditions/c1d3471f9dc62953f6f23b506711dc43"
+        },
+        {
+          "adobeAssetId": "bc5c694dbf1b4b54821f802012f18de2",
+          "date": "2026",
+          "src": "https://lightroom.adobe.com/v2c/spaces/abe5667b5dc54ec59bb265fc7975c265/assets/bc5c694dbf1b4b54821f802012f18de2/revisions/a93a920a9faca1d735b8a681d4b84953/renditions/63807d9be9542df495a42e53ce20c4a1"
+        },
+        {
+          "adobeAssetId": "d50e6ec72f28460881c887fd9d030d11",
+          "date": "2026",
+          "src": "https://lightroom.adobe.com/v2c/spaces/abe5667b5dc54ec59bb265fc7975c265/assets/d50e6ec72f28460881c887fd9d030d11/revisions/fe9d5fd2764307e20bcbfbc4db9ebfdc/renditions/88f5a7e84a2c69a66366b227a97eaf21"
+        },
+        {
+          "adobeAssetId": "eef9f90afb454cf2a156079aaeea9bcf",
+          "date": "2026",
+          "src": "https://lightroom.adobe.com/v2c/spaces/abe5667b5dc54ec59bb265fc7975c265/assets/eef9f90afb454cf2a156079aaeea9bcf/revisions/932e5ccea8830a3af534a04ed007ebbf/renditions/89b9dc9aa9946201c539cd4b730ccf6a"
+        },
+        {
+          "adobeAssetId": "2163aaa05d784d5e82dbd8e3d71c6201",
+          "date": "2026",
+          "src": "https://lightroom.adobe.com/v2c/spaces/abe5667b5dc54ec59bb265fc7975c265/assets/2163aaa05d784d5e82dbd8e3d71c6201/revisions/7f01423b4a2043b0842a10cbbf95f680/renditions/742dd70b2bebbfe877aa33a105481812"
+        },
+        {
+          "adobeAssetId": "4c73ea7cbad64a47afe213b2a270769d",
+          "date": "2026",
+          "src": "https://lightroom.adobe.com/v2c/spaces/abe5667b5dc54ec59bb265fc7975c265/assets/4c73ea7cbad64a47afe213b2a270769d/revisions/47314e32c7ba51f049541173a26ddd47/renditions/c0d98e7cac6b9791e7a9370506611834"
+        },
+        {
+          "adobeAssetId": "25c88fc02ca045e8895e96ca5ab19d07",
+          "date": "2026",
+          "src": "https://lightroom.adobe.com/v2c/spaces/abe5667b5dc54ec59bb265fc7975c265/assets/25c88fc02ca045e8895e96ca5ab19d07/revisions/1dcf780b62e57c728c269d260d0aa349/renditions/082bf3d500204341b69af91dec930daa"
+        }
+      ],
+      "mediaSource": "adobe_album",
+      "adobeAlbumUrl": "https://adobe.ly/4BDboaX",
+      "albumLinked": true,
+      "adobeAlbumId": "d35a2ae6f78046238673f37b18ba7141",
+      "pack": "bronze",
+      "orientation": "portrait",
+      "date": "2026"
     }
   ]
 }
