@@ -6,22 +6,39 @@
   <meta name="robots" content="noindex, nofollow">
   <title>Photo picker — Daniel Trego</title>
   <style>
-    :root { --bg:#151515; --panel:#1d1d1d; --line:#2e2e2e; --paper:#ece7dc; --muted:#9a948a; --red:#d4473a; --teal:#3e6b79; --gold:#ffd45c; }
+    :root { --bg:#151515; --panel:#1d1d1d; --line:#2e2e2e; --paper:#ece7dc; --muted:#9a948a; --red:#d4473a; --teal:#3e6b79; --gold:#ffd45c; --ok:#8fc98f; }
     * { box-sizing:border-box; }
     body { margin:0; background:var(--bg); color:var(--paper); font:14px/1.5 ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace; }
-    .shell { max-width:1280px; margin:0 auto; padding:18px 24px 120px; }
-    .topbar { display:flex; justify-content:space-between; align-items:center; padding-bottom:14px; border-bottom:1px solid var(--line); }
+    .shell { max-width:1280px; margin:0 auto; padding:18px 24px 130px; }
+    .topbar { display:flex; justify-content:space-between; align-items:center; gap:12px; padding-bottom:14px; border-bottom:1px solid var(--line); }
     .site-title { color:var(--paper); text-decoration:none; font:28px/1 Impact,Haettenschweiler,"Arial Narrow Bold",sans-serif; }
     .page-mark { display:flex; gap:12px; align-items:baseline; padding:16px 0 4px; font-size:11px; text-transform:uppercase; }
     .page-mark b { color:var(--red); font-weight:400; letter-spacing:.14em; }
     .page-mark span { font-size:15px; letter-spacing:.04em; }
-    p.help { color:var(--muted); max-width:760px; margin:6px 0 18px; font-size:13px; }
+    p.help { color:var(--muted); max-width:780px; margin:6px 0 18px; font-size:13px; }
     .bar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:14px; }
-    select,button { font:inherit; font-size:12px; color:var(--paper); background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:8px 12px; cursor:pointer; }
+    select,button,input { font:inherit; font-size:12px; color:var(--paper); background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:8px 12px; }
+    button { cursor:pointer; }
+    input { min-width:0; }
+    input::placeholder { color:#6f6a62; }
     button:hover,select:hover { border-color:#555; }
-    button.primary { background:var(--teal); border-color:var(--teal); }
-    button:focus-visible,select:focus-visible,.tile:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
+    button:disabled { opacity:.45; cursor:not-allowed; }
+    button.primary { background:var(--teal); border-color:var(--teal); color:#fff; }
+    button.danger { color:#ff9b8f; }
+    button.danger.armed { background:#7a2a22; border-color:#a8463f; color:#fff; }
+    button:focus-visible,select:focus-visible,input:focus-visible,.tile:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
     .meta { color:var(--muted); font-size:12px; margin-left:auto; }
+    .conn { font-size:12px; color:var(--muted); display:flex; gap:8px; align-items:center; }
+    .conn .dot { width:8px; height:8px; border-radius:50%; background:#555; }
+    .conn.on .dot { background:var(--ok); }
+    .panel { display:flex; flex-wrap:wrap; gap:10px; align-items:end; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px; margin-bottom:14px; }
+    .panel[hidden] { display:none; }
+    .field { display:flex; flex-direction:column; gap:4px; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; }
+    .field input,.field select { text-transform:none; letter-spacing:0; }
+    .field.grow { flex:1 1 320px; }
+    .field[hidden] { display:none; }
+    .err { color:#ff9b8f; font-size:12px; width:100%; min-height:0; }
+    .err:empty { display:none; }
     .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; }
     .tile { position:relative; padding:0; border:2px solid transparent; border-radius:8px; background:#222; overflow:hidden; aspect-ratio:1; cursor:pointer; }
     .tile img { width:100%; height:100%; object-fit:contain; display:block; background:#111; transition:opacity .15s; }
@@ -31,73 +48,199 @@
     .tile[aria-pressed="true"] { border-color:var(--red); }
     .tile[aria-pressed="true"] .order { display:grid; }
     .grid.full .tile[aria-pressed="false"] img { opacity:.45; }
-    .tray { position:fixed; left:0; right:0; bottom:0; background:rgba(21,21,21,.96); border-top:1px solid var(--line); padding:12px 24px; }
+    .empty { color:var(--muted); padding:40px 0; }
+    .loading { color:var(--muted); padding:40px 0; display:flex; gap:12px; align-items:center; }
+    .spin { width:16px; height:16px; border:2px solid #444; border-top-color:var(--gold); border-radius:50%; animation:spin 1s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    .tray { position:fixed; left:0; right:0; bottom:0; background:rgba(21,21,21,.97); border-top:1px solid var(--line); padding:12px 24px; }
     .tray-in { max-width:1280px; margin:0 auto; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
-    .strip { display:flex; gap:6px; flex:1; min-width:200px; overflow-x:auto; padding:2px; }
+    .strip { display:flex; gap:6px; flex:1; min-width:160px; overflow-x:auto; padding:2px; }
     .strip img { height:44px; width:44px; object-fit:cover; border-radius:4px; border:1px solid var(--line); flex:none; }
     .count { font-size:12px; color:var(--muted); white-space:nowrap; }
-    .status { font-size:12px; color:var(--gold); min-height:1em; }
-    .empty { color:var(--muted); padding:40px 0; }
+    .status { font-size:12px; color:var(--gold); width:100%; }
+    .status:empty { display:none; }
+    dialog { background:var(--panel); color:var(--paper); border:1px solid var(--line); border-radius:12px; padding:22px; max-width:560px; width:calc(100% - 32px); }
+    dialog::backdrop { background:rgba(0,0,0,.6); }
+    dialog h2 { margin:0 0 10px; font-size:16px; }
+    dialog ol { padding-left:20px; color:#cfc9bd; font-size:13px; }
+    dialog li { margin:4px 0; }
+    dialog a { color:var(--gold); }
+    .row { display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
+    .row input { flex:1 1 260px; }
+    .note { color:var(--muted); font-size:12px; margin-top:10px; }
   </style>
 </head>
 <body>
   <div class="shell">
-    <header class="topbar"><a class="site-title" href="/">DANIEL TREGO</a></header>
+    <header class="topbar"><a class="site-title" href="/">DANIEL TREGO</a><div class="conn" id="conn"><span class="dot" aria-hidden="true"></span><span id="connText">Not connected</span><button type="button" id="connBtn">Connect GitHub</button></div></header>
     <div class="page-mark"><b>Photo picker</b><span>CHOOSE THE FRAMES.</span></div>
-    <p class="help">Pick an album, click photos in the order you want them on the disc (up to 14), then copy the selection and paste it into that album's <strong>Photos to use</strong> field in Pages CMS. Save, and the disc updates in about a minute. Hearts show likes on the Lightroom share.</p>
+    <p class="help" id="help">Add a Lightroom album, click photos in the order you want them on the disc (up to 14), then save. The site updates about a minute later.</p>
+
     <div class="bar">
-      <label for="album" class="count">Album</label>
+      <label for="album" class="count">Disc</label>
       <select id="album"></select>
+      <button type="button" id="addBtn">+ Add album</button>
       <button type="button" id="first">First 14</button>
       <button type="button" id="liked">Select liked</button>
       <button type="button" id="clear">Clear</button>
       <span class="meta" id="meta"></span>
     </div>
+
+    <form class="panel" id="addPanel" hidden novalidate>
+      <label class="field grow">Lightroom share link<input id="newUrl" type="url" placeholder="https://adobe.ly/…" required></label>
+      <label class="field">Disc name (optional)<input id="newTitle" placeholder="Album name"></label>
+      <label class="field">Pack<select id="newPack"></select></label>
+      <label class="field" id="newPackNameWrap" hidden>New pack name<input id="newPackName" placeholder="Pack name"></label>
+      <button type="submit" class="primary">Add disc</button>
+      <button type="button" id="addCancel">Cancel</button>
+      <p class="err" id="addErr" role="alert"></p>
+    </form>
+
+    <form class="panel" id="discPanel" hidden>
+      <label class="field grow">Disc name<input id="editTitle"></label>
+      <label class="field">Pack<select id="editPack"></select></label>
+      <label class="field" id="editPackNameWrap" hidden>New pack name<input id="editPackName" placeholder="Pack name"></label>
+      <button type="submit">Save details</button>
+      <button type="button" class="danger" id="deleteBtn">Delete disc</button>
+      <p class="err" id="editErr" role="alert"></p>
+    </form>
+
     <div class="grid" id="grid" role="group" aria-label="Album photos"></div>
   </div>
+
   <div class="tray">
     <div class="tray-in">
       <span class="count" id="count" aria-live="polite">0 / 14 selected</span>
       <div class="strip" id="strip" aria-hidden="true"></div>
-      <button type="button" class="primary" id="copy">Copy selection</button>
-      <span class="status" id="status" role="status"></span>
+      <button type="button" class="primary" id="save">Save to disc</button>
+      <button type="button" id="copy">Copy selection</button>
+      <p class="status" id="status" role="status"></p>
     </div>
   </div>
+
+  <dialog id="connDialog" aria-labelledby="connTitle">
+    <form method="dialog" id="connForm">
+      <h2 id="connTitle">Connect the picker to GitHub</h2>
+      <p class="note" style="margin-top:0">One-time setup so the picker can save discs for you. The key stays in this browser only.</p>
+      <ol>
+        <li>Open <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub → New fine-grained token</a>.</li>
+        <li>Name it <strong>Portfolio picker</strong> and pick an expiration (1 year is fine).</li>
+        <li>Under <strong>Repository access</strong>, choose <strong>Only select repositories</strong> → <strong>tregodan/danieltrego</strong>.</li>
+        <li>Under <strong>Permissions → Repository permissions</strong>, set <strong>Contents</strong> to <strong>Read and write</strong>.</li>
+        <li>Click <strong>Generate token</strong>, copy it, and paste it below.</li>
+      </ol>
+      <div class="row"><input id="tokenInput" type="password" autocomplete="off" placeholder="github_pat_…" aria-label="GitHub token"><button type="submit" class="primary" id="tokenSave" value="save">Connect</button><button type="button" id="tokenCancel">Cancel</button></div>
+      <p class="err" id="tokenErr" role="alert"></p>
+    </form>
+  </dialog>
+
   <script>
-    const MAX = 14, $ = (s) => document.querySelector(s);
-    let data = { albums: [] }, album = null, picked = [];
+    const MAX = 14, OWNER = 'tregodan', REPO = 'danieltrego', FILE = 'content/portfolio.json';
+    const SHEETS_API = 'https://api.github.com/repos/tregodan/danieltregoportfolio/contents/content/album-sheets.json';
+    const $ = (s) => document.querySelector(s);
+    const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const parsePicks = (t) => String(t || '').toLowerCase().match(/[0-9a-f]{6,32}/g) || [];
+    const norm = (u) => String(u || '').trim();
+    let token = ''; try { token = localStorage.getItem('dt-picker-token') || ''; } catch {}
+    let cms = null, sheets = [], current = null, picked = [], pollTimer = null;
 
-    function setStatus(text) { $('#status').textContent = text; if (text) setTimeout(() => { if ($('#status').textContent === text) $('#status').textContent = ''; }, 4000); }
+    // ---------- GitHub ----------
+    const gh = (url, opts = {}) => fetch(url, { ...opts, cache: 'no-store', headers: { Accept: 'application/vnd.github+json', Authorization: `Bearer ${token}`, ...(opts.headers || {}) } });
+    const b64decode = (b) => new TextDecoder().decode(Uint8Array.from(atob(b.replace(/\n/g, '')), (c) => c.charCodeAt(0)));
+    const b64encode = (s) => { const bytes = new TextEncoder().encode(s); let bin = ''; for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000)); return btoa(bin); };
+    async function readCms() {
+      const r = await gh(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE}?ref=main`);
+      if (r.status === 401 || r.status === 403 || r.status === 404) throw new Error('GitHub rejected the key. Check it has Contents: Read and write on tregodan/danieltrego.');
+      if (!r.ok) throw new Error(`GitHub error ${r.status}`);
+      const j = await r.json();
+      return { data: JSON.parse(b64decode(j.content)), sha: j.sha };
+    }
+    async function commit(message, change) {
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const { data, sha } = await readCms();
+        change(data);
+        const r = await gh(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${FILE}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message, sha, branch: 'main', content: b64encode(`${JSON.stringify(data, null, 2)}\n`) }) });
+        if (r.ok) { cms = data; return; }
+        if (r.status !== 409 && r.status !== 422) throw new Error(`Save failed (${r.status}).`);
+      }
+      throw new Error('Someone else saved at the same moment. Try again.');
+    }
+    async function loadSheets() {
+      try {
+        if (token) { const r = await gh(SHEETS_API, { headers: { Accept: 'application/vnd.github.raw+json' } }); if (r.ok) return (await r.json()).albums || []; }
+        const r = await fetch(`content/album-sheets.json?t=${Date.now()}`, { cache: 'no-store' });
+        return r.ok ? (await r.json()).albums || [] : [];
+      } catch { return []; }
+    }
 
-    function render() {
-      const grid = $('#grid');
-      if (!album) { grid.innerHTML = '<p class="empty">No albums yet. Add one under Adobe albums in Pages CMS.</p>'; return; }
+    // ---------- model ----------
+    function entries() {
+      if (cms) return (cms.discs || []).filter((d) => d && d.album).map((d) => ({ url: norm(d.album), title: d.title || '', pack: d.pack || '', photos: d.photos || '', sheet: sheets.find((s) => norm(s.url) === norm(d.album)) || null }));
+      return sheets.map((s) => ({ url: norm(s.url), title: s.title || s.name, pack: '', photos: (s.picks || []).join(', '), sheet: s }));
+    }
+    function packNames() { return [...new Set([...(cms?.packs || []).map((p) => p.name).filter(Boolean)])]; }
+    function fillPackSelect(sel, value) {
+      const names = packNames();
+      sel.innerHTML = `<option value="">— none —</option>${names.map((n) => `<option ${n === value ? 'selected' : ''}>${esc(n)}</option>`).join('')}<option value="__new">+ New pack…</option>`;
+      if (value && !names.includes(value)) sel.insertAdjacentHTML('afterbegin', `<option selected>${esc(value)}</option>`);
+    }
+
+    // ---------- UI ----------
+    function setStatus(text, sticky) { $('#status').textContent = text; if (text && !sticky) setTimeout(() => { if ($('#status').textContent === text) $('#status').textContent = ''; }, 6000); }
+    function renderConn() {
+      $('#conn').classList.toggle('on', !!token);
+      $('#connText').textContent = token ? 'Connected to GitHub' : 'Not connected';
+      $('#connBtn').textContent = token ? 'Disconnect' : 'Connect GitHub';
+      $('#save').hidden = !token; $('#addBtn').hidden = !token;
+      $('#help').textContent = token
+        ? 'Add a Lightroom album, click photos in the order you want them on the disc (up to 14), then Save to disc. The site updates about a minute later.'
+        : 'Click photos in the order you want them on the disc (up to 14), then Copy selection and paste it into Photos to use in Pages CMS. Connect GitHub to add albums and save from here.';
+    }
+    function renderList(keepUrl) {
+      const list = entries();
+      $('#album').innerHTML = list.length ? list.map((e, i) => `<option value="${i}">${esc(e.title || e.sheet?.name || e.url)}${e.sheet ? '' : ' (loading…)'}</option>`).join('') : '<option>No discs yet</option>';
+      let idx = Math.max(0, list.findIndex((e) => e.url === keepUrl));
+      $('#album').value = String(idx);
+      choose(list[idx] || null);
+    }
+    function choose(entry) {
+      current = entry; clearTimeout(pollTimer);
+      $('#discPanel').hidden = !(token && entry);
+      if (token && entry) { $('#editTitle').value = entry.title; fillPackSelect($('#editPack'), entry.pack); $('#editPackNameWrap').hidden = true; $('#editErr').textContent = ''; resetDelete(); }
+      if (entry?.sheet) {
+        const ids = entry.sheet.photos.map((p) => p.id);
+        const start = parsePicks(entry.photos).length ? parsePicks(entry.photos) : entry.sheet.onDisc || [];
+        picked = start.map((id) => ids.find((x) => x.startsWith(id.slice(0, 8)))).filter(Boolean).slice(0, MAX);
+      } else picked = [];
+      renderGrid();
+      if (entry && !entry.sheet) poll(entry.url, 0);
+    }
+    function renderGrid() {
+      const grid = $('#grid'), e = current;
+      ['#first', '#liked', '#clear', '#save', '#copy'].forEach((s) => ($(s).disabled = !e?.sheet));
+      if (!e) { grid.innerHTML = `<p class="empty">${token ? 'No discs yet — click + Add album to start.' : 'No albums yet.'}</p>`; $('#meta').textContent = ''; sync(); return; }
+      if (!e.sheet) { grid.innerHTML = '<p class="loading"><span class="spin" aria-hidden="true"></span>Loading photos from Lightroom — usually about a minute. You can leave this open.</p>'; $('#meta').textContent = ''; sync(); return; }
       grid.innerHTML = '';
-      album.photos.forEach((p, i) => {
+      e.sheet.photos.forEach((p, i) => {
         const b = document.createElement('button');
         b.type = 'button'; b.className = 'tile'; b.dataset.id = p.id;
         b.setAttribute('aria-label', `Photo ${i + 1}${p.likes ? `, ${p.likes} like${p.likes > 1 ? 's' : ''}` : ''}`);
-        b.innerHTML = `<img loading="lazy" alt="" src="${p.thumb}"><span class="n">${i + 1}</span>${p.likes ? `<span class="likes">♥ ${p.likes}</span>` : ''}<span class="order"></span>`;
+        b.innerHTML = `<img loading="lazy" alt="" src="${esc(p.thumb)}"><span class="n">${i + 1}</span>${p.likes ? `<span class="likes">♥ ${p.likes}</span>` : ''}<span class="order"></span>`;
         b.addEventListener('click', () => toggle(p.id));
         grid.appendChild(b);
       });
-      const liked = album.photos.filter((p) => p.likes).length;
-      $('#meta').textContent = `${album.photos.length} photos · ${liked} liked${album.disc ? ` · ${album.disc}` : ''}`;
+      const liked = e.sheet.photos.filter((p) => p.likes).length;
+      $('#meta').textContent = `${e.sheet.photos.length} photos · ${liked} liked`;
       $('#liked').disabled = !liked;
       sync();
     }
-
     function sync() {
-      document.querySelectorAll('.tile').forEach((t) => {
-        const i = picked.indexOf(t.dataset.id);
-        t.setAttribute('aria-pressed', String(i >= 0));
-        t.querySelector('.order').textContent = i >= 0 ? i + 1 : '';
-      });
+      document.querySelectorAll('.tile').forEach((t) => { const i = picked.indexOf(t.dataset.id); t.setAttribute('aria-pressed', String(i >= 0)); t.querySelector('.order').textContent = i >= 0 ? i + 1 : ''; });
       $('#grid').classList.toggle('full', picked.length >= MAX);
       $('#count').textContent = `${picked.length} / ${MAX} selected`;
-      $('#strip').innerHTML = picked.map((id) => { const p = album.photos.find((x) => x.id === id); return p ? `<img src="${p.thumb}" alt="">` : ''; }).join('');
+      const photos = current?.sheet?.photos || [];
+      $('#strip').innerHTML = picked.map((id) => { const p = photos.find((x) => x.id === id); return p ? `<img src="${esc(p.thumb)}" alt="">` : ''; }).join('');
     }
-
     function toggle(id) {
       const i = picked.indexOf(id);
       if (i >= 0) picked.splice(i, 1);
@@ -105,35 +248,104 @@
       else picked.push(id);
       sync();
     }
-
-    function choose(i) {
-      album = data.albums[i] || null;
-      if (!album) return render();
-      const ids = new Set(album.photos.map((p) => p.id));
-      const start = album.picks.length ? album.picks : album.onDisc;
-      picked = start.map((id) => album.photos.find((p) => p.id.startsWith(id.slice(0, 8)))?.id).filter((id) => id && ids.has(id)).slice(0, MAX);
-      render();
+    async function poll(url, n) {
+      if (n > 40 || current?.url !== url) return;
+      pollTimer = setTimeout(async () => {
+        sheets = await loadSheets();
+        const found = sheets.find((s) => norm(s.url) === url);
+        if (found && current?.url === url) { setStatus('Photos loaded.'); renderList(url); }
+        else poll(url, n + 1);
+      }, 15000);
     }
+    let deleteArmed = false;
+    function resetDelete() { deleteArmed = false; $('#deleteBtn').classList.remove('armed'); $('#deleteBtn').textContent = 'Delete disc'; }
 
-    $('#album').addEventListener('change', (e) => choose(Number(e.target.value)));
-    $('#first').addEventListener('click', () => { picked = album.photos.slice(0, MAX).map((p) => p.id); sync(); });
-    $('#liked').addEventListener('click', () => { picked = album.photos.filter((p) => p.likes).slice(0, MAX).map((p) => p.id); sync(); });
+    // ---------- actions ----------
+    $('#album').addEventListener('change', (e) => choose(entries()[Number(e.target.value)] || null));
+    $('#first').addEventListener('click', () => { picked = current.sheet.photos.slice(0, MAX).map((p) => p.id); sync(); });
+    $('#liked').addEventListener('click', () => { picked = current.sheet.photos.filter((p) => p.likes).slice(0, MAX).map((p) => p.id); sync(); });
     $('#clear').addEventListener('click', () => { picked = []; sync(); });
     $('#copy').addEventListener('click', async () => {
       if (!picked.length) return setStatus('Select at least one photo.');
       const text = picked.join(', ');
-      try { await navigator.clipboard.writeText(text); setStatus(`Copied ${picked.length} photos — paste into "Photos to use" for ${album.title || album.name}.`); }
-      catch { prompt('Copy this selection:', text); }
+      try { await navigator.clipboard.writeText(text); setStatus(`Copied ${picked.length} photos — paste into Photos to use in Pages CMS.`); } catch { prompt('Copy this selection:', text); }
+    });
+    $('#save').addEventListener('click', async () => {
+      if (!picked.length) return setStatus('Select at least one photo first.');
+      const url = current.url, title = current.title || current.sheet?.name || 'disc';
+      $('#save').disabled = true; setStatus('Saving…', true);
+      try {
+        await commit(`Picker: choose ${picked.length} photos for ${title}`, (d) => { const disc = (d.discs || []).find((x) => norm(x.album) === url); if (!disc) throw new Error('That disc was removed in Pages CMS.'); disc.photos = picked.join(', '); });
+        setStatus(`Saved ${picked.length} photos to ${title}. The site updates in about a minute.`);
+        renderList(url);
+      } catch (err) { setStatus(err.message, true); }
+      finally { $('#save').disabled = false; }
     });
 
-    fetch('content/album-sheets.json', { cache: 'no-store' })
-      .then((r) => (r.ok ? r.json() : { albums: [] }))
-      .catch(() => ({ albums: [] }))
-      .then((d) => {
-        data = d;
-        $('#album').innerHTML = data.albums.map((a, i) => `<option value="${i}">${a.title || a.name || a.url}</option>`).join('');
-        choose(0);
-      });
+    function packFrom(sel, nameInput) { return sel.value === '__new' ? nameInput.value.trim() : sel.value; }
+    function ensurePack(d, name) { if (!name) return; d.packs = d.packs || []; if (!d.packs.some((p) => p.name === name)) d.packs.push({ name }); }
+    $('#newPack').addEventListener('change', () => { $('#newPackNameWrap').hidden = $('#newPack').value !== '__new'; });
+    $('#editPack').addEventListener('change', () => { $('#editPackNameWrap').hidden = $('#editPack').value !== '__new'; });
+    $('#addBtn').addEventListener('click', () => { fillPackSelect($('#newPack'), ''); $('#newPackNameWrap').hidden = true; $('#addErr').textContent = ''; $('#addPanel').hidden = false; $('#newUrl').focus(); });
+    $('#addCancel').addEventListener('click', () => { $('#addPanel').hidden = true; });
+    $('#newUrl').addEventListener('input', () => { $('#addErr').textContent = ''; });
+    $('#addPanel').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const url = norm($('#newUrl').value), title = $('#newTitle').value.trim(), pack = packFrom($('#newPack'), $('#newPackName'));
+      if (!/^https:\/\/(adobe\.ly|lightroom\.adobe\.com)\//i.test(url)) return ($('#addErr').textContent = 'Paste a Lightroom share link (it starts with https://adobe.ly/ or https://lightroom.adobe.com/).');
+      if ($('#newPack').value === '__new' && !pack) return ($('#addErr').textContent = 'Type a name for the new pack.');
+      if (entries().some((x) => x.url === url)) return ($('#addErr').textContent = 'That album is already a disc.');
+      try {
+        setStatus('Adding disc…', true);
+        await commit(`Picker: add disc ${title || url}`, (d) => { ensurePack(d, pack); d.discs = d.discs || []; const disc = { album: url }; if (title) disc.title = title; if (pack) disc.pack = pack; d.discs.push(disc); });
+        $('#addPanel').hidden = true; $('#newUrl').value = ''; $('#newTitle').value = '';
+        setStatus('Disc added. Loading its photos from Lightroom — about a minute.');
+        renderList(url);
+      } catch (err) { $('#addErr').textContent = err.message; setStatus(''); }
+    });
+    $('#discPanel').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const url = current.url, title = $('#editTitle').value.trim(), pack = packFrom($('#editPack'), $('#editPackName'));
+      if ($('#editPack').value === '__new' && !pack) return ($('#editErr').textContent = 'Type a name for the new pack.');
+      try {
+        setStatus('Saving…', true);
+        await commit(`Picker: update ${title || url}`, (d) => { ensurePack(d, pack); const disc = (d.discs || []).find((x) => norm(x.album) === url); if (!disc) throw new Error('That disc was removed in Pages CMS.'); if (title) disc.title = title; else delete disc.title; if (pack) disc.pack = pack; else delete disc.pack; });
+        setStatus('Saved. The site updates in about a minute.'); renderList(url);
+      } catch (err) { $('#editErr').textContent = err.message; setStatus(''); }
+    });
+    $('#deleteBtn').addEventListener('click', async () => {
+      if (!deleteArmed) { deleteArmed = true; $('#deleteBtn').classList.add('armed'); $('#deleteBtn').textContent = 'Click again to delete'; setTimeout(resetDelete, 4000); return; }
+      const url = current.url, title = current.title || 'disc';
+      try {
+        setStatus('Deleting…', true);
+        await commit(`Picker: delete disc ${title}`, (d) => { d.discs = (d.discs || []).filter((x) => norm(x.album) !== url); });
+        setStatus(`Deleted ${title}. It leaves the site in about a minute.`); renderList('');
+      } catch (err) { setStatus(err.message, true); }
+    });
+
+    $('#connBtn').addEventListener('click', () => {
+      if (token) { token = ''; try { localStorage.removeItem('dt-picker-token'); } catch {} cms = null; renderConn(); renderList(current?.url); setStatus('Disconnected. The key was removed from this browser.'); return; }
+      $('#tokenErr').textContent = ''; $('#tokenInput').value = ''; $('#connDialog').showModal();
+    });
+    $('#tokenCancel').addEventListener('click', () => $('#connDialog').close());
+    $('#connForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const t = $('#tokenInput').value.trim();
+      if (!t) return ($('#tokenErr').textContent = 'Paste the token first.');
+      token = t;
+      try {
+        const r = await readCms(); cms = r.data;
+        try { localStorage.setItem('dt-picker-token', t); } catch {}
+        $('#connDialog').close(); renderConn(); sheets = await loadSheets(); renderList(current?.url); setStatus('Connected. You can add albums and save from here.');
+      } catch (err) { token = ''; $('#tokenErr').textContent = err.message; }
+    });
+
+    (async () => {
+      renderConn();
+      if (token) { try { cms = (await readCms()).data; } catch (err) { setStatus(`${err.message} Click Disconnect, then connect with a new key.`, true); } }
+      sheets = await loadSheets();
+      renderList('');
+    })();
   </script>
 </body>
 </html>
