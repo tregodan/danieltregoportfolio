@@ -63,7 +63,9 @@
           "date": "2017",
           "src": "https://lightroom.adobe.com/v2c/spaces/20f3749564af4d5891d634207e9524a8/assets/e00d84e0437867f603b6eedf1a605ab6/revisions/2e6ef7f9eeb044d1818e034963247344/renditions/ceb6771028a19066567d4a5c6214f9a3"
         }
-      ]
+      ],
+      "albumLinked": true,
+      "adobeAlbumId": "73b836bbe0da49fda43cf467080055c8"
     }
   ]
 }
