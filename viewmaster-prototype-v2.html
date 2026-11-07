@@ -373,6 +373,35 @@
     body[data-boot="1"] .info,body[data-boot="2"] .info,body[data-boot="1"] .discs,body[data-boot="2"] .discs { opacity:0; }
     body[data-boot] #hero { transition:opacity .5s ease; }
     @media (prefers-reduced-motion:reduce) { body[data-boot] * { transition:none !important; animation:none !important; } }
+    /* shelf placement: side rack on wide screens (A), under the disc details on medium (C), under the viewer on phones */
+    .stage { grid-template-areas:"viewer ." "viewer info" "viewer shelf" "viewer ."; grid-template-rows:1fr auto auto 1fr; align-items:start; }
+    .stage > .viewer-wrap { grid-area:viewer; align-self:center; }
+    .stage > .info { grid-area:info; align-self:end; }
+    .stage > .discs { grid-area:shelf; border-top:1px solid var(--line); margin-top:18px; padding-top:14px; min-height:0; }
+    .stage > .discs .section-label { justify-content:flex-start; margin-bottom:8px; }
+    .stage > .discs .disc-row { display:grid; grid-template-columns:repeat(auto-fill,minmax(84px,1fr)); gap:14px 10px; overflow:visible; padding:6px 0 0; min-height:0; }
+    .stage > .discs .disc { flex:none; width:auto; padding:0; }
+    .stage > .discs .disc-art { width:72px; margin:0 auto; }
+    .stage > .discs .disc small { font-size:11px; margin-top:6px; }
+    @media (min-width:1320px) and (min-height:700px) {
+      .shell { width:min(1320px,94vw); }
+      .stage { grid-template-columns:118px minmax(0,1.5fr) minmax(260px,.8fr); grid-template-areas:"shelf viewer ." "shelf viewer info" "shelf viewer info" "shelf viewer ."; grid-template-rows:1fr auto auto 1fr; }
+      .stage > .info { align-self:center; }
+      .stage > .discs { align-self:center; border-top:0; border-right:1px solid var(--line); margin:0; padding:0 16px 0 0; max-height:calc(100svh - 190px); overflow-y:auto; scrollbar-width:thin; }
+      .stage > .discs .section-label { flex-direction:column; align-items:stretch; gap:8px; }
+      .stage > .discs .section-label .pack-picker { flex-direction:column; gap:6px; }
+      .stage > .discs .pack-button { width:100%; justify-content:flex-start; padding:5px 8px; font-size:10px; }
+      .stage > .discs .disc-row { display:flex; flex-direction:column; align-items:center; gap:14px; padding:8px 0 4px; }
+      .stage > .discs .disc-art { width:78px; }
+    }
+    @media (max-width:900px) {
+      .stage { grid-template-columns:1fr; grid-template-areas:"viewer" "shelf" "info"; grid-template-rows:auto; }
+      .stage > .info { align-self:start; }
+      .stage > .discs { margin-top:4px; }
+      .stage > .discs .disc-row { display:flex; overflow-x:auto; gap:16px; padding:6px 4px 10px; }
+      .stage > .discs .disc { flex:0 0 96px; }
+      .stage > .discs .disc-art { width:84px; }
+    }
   </style>
 </head>
 <body data-boot="0">
@@ -382,9 +411,9 @@
     <div class="page-mark"><span class="rec" aria-hidden="true"></span><span class="page-name">PHOTO PORTFOLIO</span><span class="page-tag">FRAME BY FRAME.</span></div>
     <section class="stage" aria-label="View-Master portfolio viewer">
       <div class="viewer-wrap" id="viewerWrap" data-fs="black"><div class="reel" id="reel" aria-hidden="true"></div><div class="title-window" aria-hidden="true"><span id="titleWindow"></span></div><div class="num-window" aria-hidden="true"><span id="numWindow">01</span></div><div class="fs-hud" id="fsHud" aria-hidden="true"></div><button type="button" class="hud-disc" id="hudPrevDisc" aria-label="Previous disc">‹ DISC</button><button type="button" class="hud-disc" id="hudNextDisc" aria-label="Next disc">DISC ›</button><div class="viewer" id="viewer" data-color="red" aria-label="View-Master viewer"><div class="viewer-tools" aria-label="Viewer color"><button type="button" class="swatch red" data-color="red" aria-label="Red viewer"></button><button type="button" class="swatch black" data-color="black" aria-label="Black viewer"></button><button type="button" class="swatch blue" data-color="blue" aria-label="Blue viewer"></button><button type="button" class="swatch white" data-color="white" aria-label="Gray viewer"></button></div><button type="button" id="share" aria-label="Share this reel">SHARE</button><button type="button" id="fullscreen">FULLSCREEN</button><div class="window"><img id="hero" alt="" /></div><div class="controls" aria-label="Viewer controls"><div class="control-left"><button type="button" class="arrow" id="prev">← PREV IMAGE</button><button type="button" class="disc-nav" id="prevDisc">← DISC</button></div><span id="counter" aria-live="polite">01 - 01/07</span><div class="control-right"><button type="button" class="disc-nav" id="nextDisc">DISC →</button><button type="button" class="arrow" id="next">NEXT IMAGE →</button></div></div></div>
-      <div class="slider" id="slider"><span class="slider-track" aria-hidden="true"></span><button type="button" class="thumb" id="lever" aria-label="Advance to the next image. Tap, press Enter, or drag down."><span class="grip" aria-hidden="true"></span><svg class="chev" viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1.5 L6 6.5 L11 1.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div><div class="toast" id="toast" role="status" aria-live="polite"></div><p class="turn-hint" aria-hidden="true">⟲ Turn your phone for full view</p></div><aside class="info" aria-labelledby="title"><div class="kicker" id="code">DISC_01 / SERIES_A</div><h2 id="title">Night Studies</h2><p id="description"></p><div class="meta"><div id="locationMeta">LOCATION<strong id="location"></strong></div><div id="formatMeta">FORMAT<strong id="format"></strong></div><div id="captionMeta">CAPTION<strong id="caption"></strong></div><div id="dateMeta">DATE<strong id="date"></strong></div></div><div class="analog-meta" id="analog" aria-label="Camera settings"></div></aside>
+      <div class="slider" id="slider"><span class="slider-track" aria-hidden="true"></span><button type="button" class="thumb" id="lever" aria-label="Advance to the next image. Tap, press Enter, or drag down."><span class="grip" aria-hidden="true"></span><svg class="chev" viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1.5 L6 6.5 L11 1.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div><div class="toast" id="toast" role="status" aria-live="polite"></div><p class="turn-hint" aria-hidden="true">⟲ Turn your phone for full view</p></div><aside class="info" aria-labelledby="title"><div class="kicker" id="code">DISC_01 / SERIES_A</div><h2 id="title">Night Studies</h2><p id="description"></p><div class="meta"><div id="locationMeta">LOCATION<strong id="location"></strong></div><div id="formatMeta">FORMAT<strong id="format"></strong></div><div id="captionMeta">CAPTION<strong id="caption"></strong></div><div id="dateMeta">DATE<strong id="date"></strong></div></div><div class="analog-meta" id="analog" aria-label="Camera settings"></div></aside><section class="discs" aria-labelledby="disc-heading"><div class="section-label"><span id="disc-heading">LOAD A DISC</span><span class="sr-only" id="pack-heading">Packs</span><div class="pack-picker" id="packs" role="group" aria-labelledby="pack-heading"></div></div><div class="disc-shelf"><div class="disc-row" id="discs" role="list" aria-labelledby="disc-heading"></div></div></section>
     </section>
-    <section class="discs" aria-labelledby="disc-heading"><div class="section-label"><span id="disc-heading">LOAD A DISC</span><span class="sr-only" id="pack-heading">Packs</span><div class="pack-picker" id="packs" role="group" aria-labelledby="pack-heading"></div></div><div class="disc-shelf"><div class="disc-row" id="discs" role="list" aria-labelledby="disc-heading"></div></div></section>
+    
     <footer class="footer"><span>© DANIEL TREGO</span><span>INSTAGRAM /TREGODAN</span><span>CONTACT // EJECT</span></footer>
   </main>
   <script>
