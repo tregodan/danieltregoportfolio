@@ -365,9 +365,17 @@
     .toast.on { opacity:1; transform:translateX(-50%); }
     .viewer-wrap:is(:fullscreen,.theater) .toast { bottom:56px; }
     @media (max-width:600px) { .viewer-wrap #share { top:12.6cqw; right:4.5cqw; padding:6px 8px; font-size:9px; } .toast { bottom:-40px; white-space:normal; width:90%; text-align:center; } }
+    /* load choreography: viewer → reel → photo → info and shelf */
+    body[data-boot] .viewer-wrap,body[data-boot] .info,body[data-boot] .discs { transition:opacity .45s ease; }
+    body[data-boot="0"] .viewer-wrap,body[data-boot="0"] .info,body[data-boot="0"] .discs { opacity:0; }
+    body[data-boot="0"] .reel,body[data-boot="1"] .reel { opacity:0; transform:translate(-50%,-30%); }
+    body[data-boot="0"] #hero,body[data-boot="1"] #hero,body[data-boot="2"] #hero { opacity:0; }
+    body[data-boot="1"] .info,body[data-boot="2"] .info,body[data-boot="1"] .discs,body[data-boot="2"] .discs { opacity:0; }
+    body[data-boot] #hero { transition:opacity .5s ease; }
+    @media (prefers-reduced-motion:reduce) { body[data-boot] * { transition:none !important; animation:none !important; } }
   </style>
 </head>
-<body>
+<body data-boot="0">
   <a class="skip-link" href="#main-content">Skip to content</a>
   <main class="shell" id="main-content">
     <header class="topbar"><a class="site-title" href="/">DANIEL TREGO</a><nav class="site-nav" aria-label="Primary navigation"><a class="active" aria-current="page" href="viewmaster-prototype-v2.html">PHOTO</a><a href="high-scores.html">HIGH SCORES</a></nav></header>
@@ -412,6 +420,10 @@
     packs=normalizePacks([]); buildPacks(); buildDiscs();
     function advance(){ const t=$('#lever'); if(!t.classList.contains('dragging')){ t.classList.add('pulled'); setTimeout(()=>t.classList.remove('pulled'),260); } frame=(frame+1)%collection.images.length; render(); }
     let linkReady=false;
+    function boot(){ const b=document.body; if(!b.dataset.boot)return; const step=(n,ms)=>new Promise(r=>setTimeout(()=>{ b.dataset.boot=n; r(); },ms));
+      const hero=$('#hero'); const photoReady=new Promise(r=>{ const done=()=>r(); if(hero.complete&&hero.naturalWidth)return setTimeout(done,0); hero.addEventListener('load',done,{once:true}); hero.addEventListener('error',done,{once:true}); setTimeout(done,2500); });
+      (async()=>{ await step('1',30); await step('2',280); await Promise.all([photoReady,new Promise(r=>setTimeout(r,420))]); b.dataset.boot='3'; await new Promise(r=>setTimeout(r,450)); delete b.dataset.boot; })(); }
+    setTimeout(()=>boot(),6000);
     const slugify=v=>String(v||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
     const discSlug=c=>c.slug||slugify(c.title);
     function shareUrl(){ return location.origin+'/reel/'+discSlug(collection)+'/'+(frame?'?frame='+(frame+1):''); }
@@ -445,7 +457,7 @@
       mq.addEventListener?.('change',apply); apply();
       wrap.addEventListener('click',()=>{ if(wrap.classList.contains('theater')&&!document.fullscreenElement&&!/iPhone|iPad|iPod/.test(navigator.userAgent)) wrap.requestFullscreen?.().catch(()=>{}); });
     })();
-    syncDiscAccent(); syncSwatches(); render(); fetch('content/portfolio.json',{cache:'no-store'}).then(response=>{if(!response.ok)throw new Error('content unavailable');return response.json()}).then(data=>{packs=normalizePacks(data.packs);collections=normalizeCollections(data.discs||[],false);alignPackMembership();const q=new URLSearchParams(location.search), want=(q.get('disc')||'').toLowerCase(); collection=collections.find(c=>discSlug(c)===want||String(c.id).toLowerCase()===want)||collections[0]||collection; loadedId=null; activePack='ALL'; frame=Math.max(0,Math.min(collection.images.length-1,(parseInt(q.get('frame'),10)||1)-1)); linkReady=true; buildPacks(); buildDiscs(); render()}).catch(()=>{});
+    syncDiscAccent(); syncSwatches(); render(); fetch('content/portfolio.json',{cache:'no-store'}).then(response=>{if(!response.ok)throw new Error('content unavailable');return response.json()}).then(data=>{packs=normalizePacks(data.packs);collections=normalizeCollections(data.discs||[],false);alignPackMembership();const q=new URLSearchParams(location.search), want=(q.get('disc')||'').toLowerCase(); collection=collections.find(c=>discSlug(c)===want||String(c.id).toLowerCase()===want)||collections[0]||collection; loadedId=null; activePack='ALL'; frame=Math.max(0,Math.min(collection.images.length-1,(parseInt(q.get('frame'),10)||1)-1)); linkReady=true; buildPacks(); buildDiscs(); render(); boot()}).catch(()=>boot());
   </script>
 </body>
 </html>
