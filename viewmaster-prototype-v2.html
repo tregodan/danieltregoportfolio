@@ -554,6 +554,42 @@
       .viewer-wrap:not(:fullscreen):not(.theater) .window img { top:4cqw; bottom:auto; margin:0 auto; max-height:calc(100% - 13cqw); box-shadow:0 0 0 1px rgba(40,34,26,.55), 0 0 0 3px #f6f2e9, 0 0 0 4px rgba(40,34,26,.18); }
       .viewer-wrap:not(:fullscreen):not(.theater) .mount-label { bottom:2.6cqw; }
     }
+    /* reel sleeve: full disc details + every frame */
+    .sleeve { width:min(1040px, calc(100vw - 48px)); max-height:min(760px, calc(100dvh - 48px)); padding:0; border:0; border-radius:6px; background:radial-gradient(circle at 20% 10%, rgba(255,255,255,.35), transparent 55%), #e6dfcf; color:#3a352d; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,.6); }
+    .sleeve::backdrop { background:rgba(0,0,0,.66); }
+    .sleeve[open] { display:flex; flex-direction:column; animation:sleevein .22s ease-out; }
+    @keyframes sleevein { from { opacity:0; transform:translateY(10px); } }
+    .sleeve-band { height:10px; background:#b8352b; flex:none; }
+    .sleeve-close { position:absolute; top:22px; right:24px; background:none; border:0; color:#3a352d; font:700 13px "Arial Narrow",Arial,sans-serif; letter-spacing:.1em; cursor:pointer; padding:6px 8px; }
+    .sleeve-close:hover { text-decoration:underline; } .sleeve-close:focus-visible { outline:3px solid #b8352b; }
+    .sleeve-body { display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr); gap:0; min-height:0; flex:1; }
+    .sleeve-story { padding:44px 36px 32px 44px; border-right:1px solid #c9bfa8; display:flex; flex-direction:column; font-family:"Arial Narrow","Franklin Gothic Medium",Arial,sans-serif; overflow-y:auto; }
+    .sleeve-kicker { margin:0; font-size:12px; font-weight:700; letter-spacing:.14em; color:#7a705e; }
+    .sleeve-story h2 { margin:10px 0 14px; font:700 clamp(30px,4.4vw,52px)/1 "Arial Narrow","Franklin Gothic Medium",Arial,sans-serif; letter-spacing:.02em; text-transform:uppercase; color:#3a352d; }
+    .sleeve-desc { margin:0 0 22px; font-size:17px; line-height:1.45; color:#3a352d; max-width:40ch; font-family:Georgia,"Times New Roman",serif; }
+    .sleeve-facts { display:flex; flex-wrap:wrap; gap:18px 34px; margin:0; padding-top:18px; border-top:1px solid #c9bfa8; }
+    .sleeve-facts dt { font-size:11px; font-weight:700; letter-spacing:.14em; color:#7a705e; text-transform:uppercase; }
+    .sleeve-facts dd { margin:4px 0 0; font-size:16px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; }
+    .sleeve-sign { margin:auto 0 0; padding-top:28px; font-size:12px; font-weight:700; letter-spacing:.14em; color:#7a705e; }
+    .sleeve-frames { list-style:none; margin:0; padding:38px 30px 30px; overflow-y:auto; display:flex; flex-direction:column; gap:4px; }
+    .sleeve-frame { width:100%; display:flex; align-items:center; gap:16px; padding:8px 10px; background:none; border:0; border-radius:3px; cursor:pointer; text-align:left; color:#3a352d; font-family:"Arial Narrow","Franklin Gothic Medium",Arial,sans-serif; }
+    .sleeve-frame:hover { background:rgba(58,53,45,.07); }
+    .sleeve-frame.current { background:#d9cfb9; }
+    .sleeve-frame:focus-visible { outline:3px solid #b8352b; outline-offset:-1px; }
+    .sf-thumb { flex:none; width:84px; height:56px; display:grid; place-items:center; background:#f6f2e9; box-shadow:0 0 0 1px rgba(40,34,26,.45); }
+    .sf-thumb img { max-width:78px; max-height:50px; display:block; }
+    .sf-text { display:flex; flex-direction:column; gap:3px; min-width:0; }
+    .sf-cap { font-size:16px; font-weight:700; letter-spacing:.05em; }
+    .sf-meta { font-size:12px; letter-spacing:.08em; color:#7a705e; font-weight:700; }
+    @media (max-width:760px) {
+      .sleeve { width:100vw; max-width:100vw; height:100dvh; max-height:100dvh; border-radius:0; }
+      .sleeve-body { grid-template-columns:1fr; overflow-y:auto; }
+      .sleeve-story { border-right:0; border-bottom:1px solid #c9bfa8; padding:34px 22px 22px; overflow:visible; }
+      .sleeve-sign { display:none; }
+      .sleeve-frames { padding:12px 14px 30px; overflow:visible; }
+      .sleeve-close { top:16px; right:12px; }
+      .sf-thumb { width:72px; height:48px; } .sf-thumb img { max-width:66px; max-height:42px; }
+    }
   </style>
 </head>
 <body data-boot="0">
@@ -567,7 +603,21 @@
     
     <footer class="footer"><span>© DANIEL TREGO</span><span>INSTAGRAM /TREGODAN</span><span>CONTACT // EJECT</span></footer>
   </main>
-  <script>
+  <dialog class="sleeve" id="sleeve" aria-labelledby="sleeveTitle">
+  <div class="sleeve-band" aria-hidden="true"></div>
+  <button type="button" class="sleeve-close" id="sleeveClose" aria-label="Close details">CLOSE ✕</button>
+  <div class="sleeve-body">
+    <section class="sleeve-story">
+      <p class="sleeve-kicker" id="sleeveKicker"></p>
+      <h2 id="sleeveTitle"></h2>
+      <p class="sleeve-desc" id="sleeveDesc"></p>
+      <dl class="sleeve-facts" id="sleeveFacts"></dl>
+      <p class="sleeve-sign">DANIEL TREGO · FRAME BY FRAME.</p>
+    </section>
+    <ol class="sleeve-frames" id="sleeveFrames" aria-label="Frames on this disc"></ol>
+  </div>
+</dialog>
+<script>
       const fallbackCollections = [
       {id:'DISC_01', title:'Night Studies', location:'Detroit, MI', description:'Artificial light, empty streets, and late-hour movement. A small archive of the city after closing.', images:['https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1200&q=85','https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1200&q=85','https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=1200&q=85','https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=1200&q=85','https://images.unsplash.com/photo-1514924013411-cbf25faa35bb?auto=format&fit=crop&w=1200&q=85','https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=85','https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=1200&q=85'], captions:['After closing','Downtown, 22:41','Last light','Northbound','Underpass','One more mile','Green room']},
       {id:'DISC_02', title:'Soft Errors', location:'Various / 2024–26', description:'Small glitches in familiar places: color, memory, and the quiet evidence of a day out of sequence.', images:['https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=85','https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=1200&q=85','https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&w=1200&q=85','https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1200&q=85','https://images.unsplash.com/photo-1524230572899-a752b3835840?auto=format&fit=crop&w=1200&q=85','https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=85','https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&w=1200&q=85'], captions:['Desk light','Empty office','Blue hour','Open road','Found object','Soft focus','Exit sign']},
@@ -609,6 +659,15 @@
     packs=normalizePacks([]); buildPacks(); buildDiscs();
     function advance(){ const t=$('#lever'); if(!t.classList.contains('dragging')){ t.classList.add('pulled'); setTimeout(()=>t.classList.remove('pulled'),260); } frame=(frame+1)%collection.images.length; render(); }
     let linkReady=false;
+    function openSleeve(){ const d=$('#sleeve'), c=collection, pk=packs.find(p=>p.id===c.pack)?.title;
+      $('#sleeveKicker').textContent=['DISC '+String(collections.indexOf(c)+1).padStart(2,'0'),pk].filter(Boolean).join('  ·  ').toUpperCase();
+      $('#sleeveTitle').textContent=c.title||''; $('#sleeveDesc').textContent=c.description||''; $('#sleeveDesc').hidden=!c.description;
+      const facts=[['Location',c.location],['Year',c.date],['Frames',String(c.images.length)]].filter(f=>f[1]);
+      $('#sleeveFacts').innerHTML=facts.map(([k,v])=>'<div><dt>'+k+'</dt><dd>'+esc(v)+'</dd></div>').join('');
+      $('#sleeveFrames').innerHTML=c.images.map((src,j)=>{ const f=c.frames?.[j]||{}; const set=[f.iso&&'ISO '+f.iso,f.aperture&&'F/'+f.aperture,f.shutter].filter(Boolean).join(' · '); const meta=[set,f.location&&f.location!==c.location?f.location:'',f.date&&f.date!==c.date?f.date:''].filter(Boolean).join('  ·  ');
+        return '<li><button type="button" class="sleeve-frame'+(j===frame?' current':'')+'" data-j="'+j+'"'+(j===frame?' aria-current="true"':'')+'><span class="sf-thumb"><img src="'+esc(src)+'" alt="" loading="lazy"></span><span class="sf-text"><span class="sf-cap">'+String(j+1).padStart(2,'0')+'&nbsp;&nbsp;&nbsp;'+esc((c.captions[j]||'Frame '+(j+1)).toUpperCase())+'</span>'+(meta?'<span class="sf-meta">'+esc(meta.toUpperCase())+'</span>':'')+'</span></button></li>'; }).join('');
+      $('#sleeveFrames').querySelectorAll('.sleeve-frame').forEach(b=>b.onclick=()=>{ frame=+b.dataset.j; render(); d.close(); });
+      d.showModal(); (d.querySelector('.sleeve-frame.current')||$('#sleeveClose')).focus(); d.querySelector('.sleeve-frame.current')?.scrollIntoView({block:'center'}); }
     function jolt(){ if(matchMedia('(prefers-reduced-motion: reduce)').matches)return; $('#viewer').animate?.([{transform:'translateY(0)'},{transform:'translateY(3px)'},{transform:'translateY(-1px)'},{transform:'translateY(0)'}],{duration:220,easing:'ease-out'}); }
     function focusWheel(){ const shelf=$('#discShelf'), row=$('#discs'); if(!shelf)return; const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches; const vertical=shelf.scrollHeight>shelf.clientHeight+2, horizontal=row.scrollWidth>row.clientWidth+2;
       const discs=row.querySelectorAll('.disc'); if(reduce||(!vertical&&!horizontal)){ discs.forEach(d=>{d.style.removeProperty('--fs');d.style.removeProperty('--fo');}); return; }
@@ -647,10 +706,10 @@
       win.addEventListener('touchend',finish);
       win.addEventListener('click',e=>{ if(swiped){ swiped=false; return; } if(!wrap.classList.contains('theater')&&!document.fullscreenElement)return; const r=win.getBoundingClientRect(), x=(e.clientX-r.left)/r.width; if(x<.3)prev(); else if(x>.7)advance(); });
       $('#share').onclick=e=>{ e.stopPropagation(); shareReel(); };
-      const drawer=$('#infoDrawer'), ib=$('#infoBtn'); const mwin=$('#viewer .window'); const setInfo=open=>{ drawer.hidden=!open; mwin.classList.toggle('flipped',open); ib.setAttribute('aria-expanded',String(open)); ib.textContent=open?'PHOTO ↻':'INFO ↻'; ib.setAttribute('aria-label',open?'Turn the slide back to the photo':'Turn the slide over for disc details'); };
-      ib.onclick=e=>{ e.stopPropagation(); setInfo(drawer.hidden); }; ib.addEventListener('pointerdown',e=>e.stopPropagation()); $('#infoClose').onclick=e=>{ e.stopPropagation(); setInfo(false); ib.focus(); };
+      const drawer=$('#infoDrawer'), ib=$('#infoBtn'); const mwin=$('#viewer .window'); const setInfoOld=open=>{ drawer.hidden=!open; mwin.classList.toggle('flipped',open); ib.setAttribute('aria-expanded',String(open)); ib.textContent=open?'PHOTO ↻':'INFO ↻'; ib.setAttribute('aria-label',open?'Turn the slide back to the photo':'Turn the slide over for disc details'); };
+      ib.onclick=e=>{ e.stopPropagation(); openSleeve(); }; ib.textContent='INFO'; ib.setAttribute('aria-label','Disc details and all frames'); ib.removeAttribute('aria-controls'); ib.setAttribute('aria-haspopup','dialog'); ib.addEventListener('pointerdown',e=>e.stopPropagation()); $('#infoClose').onclick=e=>{ e.stopPropagation(); setInfo(false); ib.focus(); };
       drawer.addEventListener('click',e=>e.stopPropagation()); drawer.addEventListener('pointerdown',e=>e.stopPropagation()); drawer.addEventListener('touchstart',e=>e.stopPropagation(),{passive:true});
-      document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&!drawer.hidden){ setInfo(false); ib.focus(); } }); $('#hudPrevDisc').onclick=()=>$('#prevDisc').click(); $('#hudNextDisc').onclick=()=>$('#nextDisc').click();
+       $('#hudPrevDisc').onclick=()=>$('#prevDisc').click(); $('#hudNextDisc').onclick=()=>$('#nextDisc').click();
       const mq=matchMedia('(orientation: landscape) and (max-height: 540px) and (pointer: coarse)');
       const apply=()=>{ const on=mq.matches; wrap.classList.toggle('theater',on); document.body.classList.toggle('theater-on',on); if(!on&&document.fullscreenElement)document.exitFullscreen?.().catch(()=>{}); syncSwatches(); };
       mq.addEventListener?.('change',apply); apply();
@@ -658,7 +717,9 @@
     })();
     $('#discShelf').addEventListener('scroll',()=>requestAnimationFrame(focusWheel),{passive:true}); $('#discs').addEventListener('scroll',()=>requestAnimationFrame(focusWheel),{passive:true});
     if(['black','white'].includes($('#viewer').dataset.color))$('#viewer').dataset.color='red';
+    $('#sleeveClose').onclick=()=>$('#sleeve').close(); $('#sleeve').addEventListener('click',e=>{ if(e.target===$('#sleeve'))$('#sleeve').close(); }); $('#sleeve').addEventListener('close',()=>$('#infoBtn').focus());
     syncDiscAccent(); syncSwatches(); render(); fetch('content/portfolio.json',{cache:'no-store'}).then(response=>{if(!response.ok)throw new Error('content unavailable');return response.json()}).then(data=>{packs=normalizePacks(data.packs);collections=normalizeCollections(data.discs||[],false);alignPackMembership();const q=new URLSearchParams(location.search), want=(q.get('disc')||'').toLowerCase(); collection=collections.find(c=>discSlug(c)===want||String(c.id).toLowerCase()===want)||collections[0]||collection; loadedId=null; activePack='ALL'; frame=Math.max(0,Math.min(collection.images.length-1,(parseInt(q.get('frame'),10)||1)-1)); linkReady=true; buildPacks(); buildDiscs(); render(); boot()}).catch(()=>boot());
   </script>
+
 </body>
 </html>
