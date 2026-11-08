@@ -465,10 +465,7 @@
     .mount-label span:first-child { font-size:max(10px,2.3cqw); font-weight:700; letter-spacing:.06em; }
     .mount-label span:last-child { font-size:max(9px,1.9cqw); color:#7a705e; letter-spacing:.1em; }
     .mount-label span:empty { display:none; }
-    .viewer-wrap #infoBtn { position:absolute; z-index:3; top:12.6cqw; left:calc(5.6cqw + 92px); padding:8px 11px; font:inherit; font-size:10px; letter-spacing:.06em; border-radius:4px; cursor:pointer; background:transparent; color:var(--mold-text,#f6ebdc); border:1.5px solid rgba(0,0,0,.3); box-shadow:inset 0 1.5px 0 rgba(255,255,255,.22), inset 0 -2px 0 rgba(0,0,0,.14); text-shadow:0 1px 0 rgba(0,0,0,.25); }
-    .viewer-wrap #infoBtn:hover { background:rgba(255,255,255,.07); }
-    .viewer-wrap #infoBtn:focus-visible { outline:3px solid #ffd45c; outline-offset:2px; }
-    .viewer-wrap:is(:fullscreen,.theater) #infoBtn,.viewer-wrap:is(:fullscreen,.theater) .info { display:none !important; }
+    .viewer-wrap:is(:fullscreen,.theater) .mount-tab,.viewer-wrap:is(:fullscreen,.theater) .info { display:none !important; }
     .window .info { position:absolute; z-index:4; left:0; right:0; bottom:0; max-height:62%; overflow-y:auto; margin:0; padding:4cqw 5cqw 4.5cqw; background:rgba(18,18,18,.94); color:#ece7dc; text-align:left; align-items:stretch; justify-content:flex-start; border-radius:0 0 4px 4px; animation:drawer .2s ease-out; }
     .window .info[hidden] { display:none; }
     @keyframes drawer { from { transform:translateY(12px); opacity:0; } }
@@ -487,8 +484,62 @@
       .viewer-wrap[data-orientation="square"] { width:100%; }
       .topbar .page-mark .page-tag { display:none; }
     }
-    @media (hover:none) and (pointer:coarse) { .viewer-wrap #infoBtn { left:5.6cqw; } }
-    @media (max-width:600px) { .viewer-wrap #infoBtn { top:12.6cqw; left:4.5cqw; padding:6px 8px; font-size:9px; } .topbar .page-mark { display:none; } }
+    @media (max-width:600px) { .topbar .page-mark { display:none; } }
+    /* 4:3 viewer body, near-full-width page, slide that turns over for info */
+    .shell { width:calc(100vw - 48px) !important; max-width:1900px; }
+    .stage { grid-template-columns:132px minmax(0, min(calc((100svh - 104px) / .79), calc(100vw - 48px - 172px))) !important; gap:36px; }
+    .viewer-wrap[data-orientation="square"] { width:100%; max-width:none; margin-top:3cqw; }
+    .viewer-wrap:not(:fullscreen):not(.theater) .viewer { padding:13cqw 4cqw 2.6cqw; border-radius:0 0 3.4cqw 3.4cqw;
+      -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 40' preserveAspectRatio='none'%3E%3Cpath d='M0 40 L0 8 Q0 0 8 0 L48 0 L80 21 L320 21 L352 0 L392 0 Q400 0 400 8 L400 40 Z'/%3E%3C/svg%3E") 0 0/100% 10cqw no-repeat, linear-gradient(#000,#000) 0 9.9cqw/100% 100% no-repeat;
+      mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 40' preserveAspectRatio='none'%3E%3Cpath d='M0 40 L0 8 Q0 0 8 0 L48 0 L80 21 L320 21 L352 0 L392 0 Q400 0 400 8 L400 40 Z'/%3E%3C/svg%3E") 0 0/100% 10cqw no-repeat, linear-gradient(#000,#000) 0 9.9cqw/100% 100% no-repeat; }
+    .reel { width:58cqw !important; top:-3cqw !important; }
+    .title-window { top:6.4cqw !important; width:22cqw !important; height:4.6cqw !important; }
+    .num-window { top:6.4cqw !important; left:calc(50% + 11cqw + 1.8cqw) !important; width:7cqw !important; height:4.6cqw !important; border-radius:.8cqw !important; }
+    .num-window span { font-size:2.9cqw !important; border-radius:.5cqw !important; }
+    .viewer-wrap:not(:fullscreen):not(.theater) #fullscreen { top:6.5cqw; left:4cqw; }
+    .viewer-wrap:not(:fullscreen):not(.theater) #share { top:6.5cqw; right:4cqw; }
+    .viewer-wrap:not(:fullscreen):not(.theater) .window { aspect-ratio:1.74; }
+    .viewer-wrap:not(:fullscreen):not(.theater) .window img { inset:3cqw 3cqw 7.6cqw; max-width:calc(100% - 6cqw); max-height:calc(100% - 10.6cqw); transition:opacity .25s ease; }
+    .viewer-wrap:not(:fullscreen):not(.theater) .controls { padding-top:2cqw; }
+    .viewer-wrap:not(:fullscreen):not(.theater) .slider { top:18cqw; height:32cqw; }
+    .viewer-wrap:not(:fullscreen):not(.theater) .mount-label { bottom:2cqw; gap:.4cqw; font-family:"Arial Narrow","Franklin Gothic Medium","Helvetica Neue Condensed",Arial,sans-serif; transition:opacity .25s ease; }
+    .mount-label span:first-child { font-size:max(11px,1.7cqw); letter-spacing:.05em; }
+    .mount-label span:last-child { font-size:max(10px,1.3cqw); font-weight:700; }
+    /* INFO tab printed on the mount */
+    .mount-tab { display:none; }
+    .viewer-wrap:not(:fullscreen):not(.theater) .mount-tab { display:block; position:absolute; z-index:5; right:2.2cqw; bottom:2cqw; padding:.5cqw 1cqw; background:transparent; border:1px solid #9b917c; border-radius:3px; color:#3a352d; font:700 max(10px,1.2cqw)/1 "Arial Narrow",Arial,sans-serif; letter-spacing:.08em; cursor:pointer; }
+    .mount-tab:hover { background:rgba(58,53,45,.08); }
+    .mount-tab:focus-visible { outline:3px solid #ffd45c; outline-offset:2px; }
+    /* back of the slide */
+    .window .info { inset:0 !important; max-height:none !important; background:radial-gradient(circle at 30% 20%, rgba(255,255,255,.35), transparent 60%), #e6dfcf !important; color:#3a352d !important; display:flex; flex-direction:column; align-items:center !important; justify-content:center !important; text-align:center !important; padding:4cqw 8cqw 7cqw !important; font-family:"Arial Narrow","Franklin Gothic Medium",Arial,sans-serif; text-transform:uppercase; animation:none !important; border-radius:3px !important; }
+    .window .info .kicker { color:#7a705e !important; font-size:max(10px,1.3cqw); letter-spacing:.12em; text-align:center !important; }
+    .window .info h2 { color:#3a352d !important; font-family:inherit; font-weight:700; font-size:max(20px,3.6cqw) !important; letter-spacing:.04em; margin:.3em 0 .2em !important; text-align:center !important; }
+    .window .info p { color:#3a352d !important; font-size:max(12px,1.6cqw); letter-spacing:.03em; text-align:center !important; max-width:52ch; margin:.4em auto; }
+    .window .info .meta { justify-content:center !important; gap:2.4cqw; color:#7a705e; font-size:max(10px,1.1cqw); border-color:#9b917c !important; }
+    .window .info .meta strong { color:#3a352d; font-size:max(11px,1.4cqw); }
+    .window .info .analog-meta { color:#3a352d !important; text-align:center !important; font-size:max(11px,1.4cqw); border-color:#9b917c !important; }
+    .window .info .info-close { display:none; }
+    .window.flipped img,.window.flipped .mount-label { opacity:0; }
+    .window .info:not([hidden]) { animation:slidefade .25s ease !important; }
+    @keyframes slidefade { from { opacity:0; } }
+    @media (max-width:900px) {
+      .stage { grid-template-columns:minmax(0,1fr) !important; }
+      .shell { width:calc(100vw - 24px) !important; }
+    }
+    @media (max-width:600px) {
+      .viewer-wrap:not(:fullscreen):not(.theater) .viewer { padding:13cqw 10cqw 12cqw 4cqw; }
+      .viewer-wrap:not(:fullscreen):not(.theater) .window { aspect-ratio:1.3; }
+      .viewer-wrap:not(:fullscreen):not(.theater) .window img { inset:3cqw 3cqw 10cqw; max-height:calc(100% - 13cqw); }
+      .viewer-wrap:not(:fullscreen):not(.theater) .slider { top:20cqw; height:40cqw; }
+      .viewer-wrap:not(:fullscreen):not(.theater) #share { right:10cqw; }
+      .title-window { width:30cqw !important; height:6cqw !important; top:6cqw !important; }
+      .num-window { left:calc(50% + 15cqw + 1.8cqw) !important; width:9cqw !important; height:6cqw !important; top:6cqw !important; }
+      .num-window span { font-size:3.8cqw !important; }
+      .mount-label span:first-child { font-size:10px; } .mount-label span:last-child { font-size:9px; }
+      .viewer-wrap:not(:fullscreen):not(.theater) .mount-label { right:16cqw; }
+      .window .info { padding:3cqw 5cqw 9cqw !important; justify-content:flex-start !important; overflow-y:auto; }
+      .window .info h2 { font-size:18px !important; } .window .info p { font-size:11px; } .window .info .meta { gap:10px; }
+    }
   </style>
 </head>
 <body data-boot="0">
@@ -496,7 +547,7 @@
   <main class="shell" id="main-content">
     <header class="topbar"><a class="site-title" href="/">DANIEL TREGO</a><div class="page-mark"><span class="rec" aria-hidden="true"></span><span class="page-name">PHOTO PORTFOLIO</span><span class="page-tag">FRAME BY FRAME.</span></div><nav class="site-nav" aria-label="Primary navigation"><a class="active" aria-current="page" href="viewmaster-prototype-v2.html">PHOTO</a><a href="high-scores.html">HIGH SCORES</a></nav></header>
     <section class="stage" aria-label="View-Master portfolio viewer">
-      <div class="viewer-wrap" id="viewerWrap" data-fs="black"><div class="reel" id="reel" aria-hidden="true"></div><div class="title-window" aria-hidden="true"><span id="titleWindow"></span></div><div class="num-window" aria-hidden="true"><span id="numWindow">01</span></div><div class="fs-hud" id="fsHud" aria-hidden="true"></div><button type="button" class="hud-disc" id="hudPrevDisc" aria-label="Previous disc">‹ DISC</button><button type="button" class="hud-disc" id="hudNextDisc" aria-label="Next disc">DISC ›</button><div class="viewer" id="viewer" data-color="red" aria-label="View-Master viewer"><div class="viewer-tools" aria-label="Viewer color"><button type="button" class="swatch red" data-color="red" aria-label="Red viewer"></button><button type="button" class="swatch black" data-color="black" aria-label="Black viewer"></button><button type="button" class="swatch blue" data-color="blue" aria-label="Blue viewer"></button><button type="button" class="swatch white" data-color="white" aria-label="Gray viewer"></button></div><button type="button" id="infoBtn" aria-expanded="false" aria-controls="infoDrawer">INFO</button><button type="button" id="share" aria-label="Share this reel">SHARE</button><button type="button" id="fullscreen">FULLSCREEN</button><div class="window"><img id="hero" alt="" /><p class="mount-label" id="mountLabel" aria-hidden="true"><span id="mountLine1"></span><span id="mountLine2"></span></p><aside class="info" id="infoDrawer" aria-labelledby="title" hidden><button type="button" class="info-close" id="infoClose" aria-label="Close details">✕</button><div class="kicker" id="code">DISC_01 / SERIES_A</div><h2 id="title">Night Studies</h2><p id="description"></p><div class="meta"><div id="locationMeta">LOCATION<strong id="location"></strong></div><div id="formatMeta">FORMAT<strong id="format"></strong></div><div id="captionMeta">CAPTION<strong id="caption"></strong></div><div id="dateMeta">DATE<strong id="date"></strong></div></div><div class="analog-meta" id="analog" aria-label="Camera settings"></div></aside></div><div class="controls" aria-label="Viewer controls"><div class="control-left"><button type="button" class="arrow" id="prev">← PREV IMAGE</button><button type="button" class="disc-nav" id="prevDisc">← DISC</button></div><span id="counter" aria-live="polite">01 - 01/07</span><div class="control-right"><button type="button" class="disc-nav" id="nextDisc">DISC →</button><button type="button" class="arrow" id="next">NEXT IMAGE →</button></div></div></div>
+      <div class="viewer-wrap" id="viewerWrap" data-fs="black"><div class="reel" id="reel" aria-hidden="true"></div><div class="title-window" aria-hidden="true"><span id="titleWindow"></span></div><div class="num-window" aria-hidden="true"><span id="numWindow">01</span></div><div class="fs-hud" id="fsHud" aria-hidden="true"></div><button type="button" class="hud-disc" id="hudPrevDisc" aria-label="Previous disc">‹ DISC</button><button type="button" class="hud-disc" id="hudNextDisc" aria-label="Next disc">DISC ›</button><div class="viewer" id="viewer" data-color="red" aria-label="View-Master viewer"><div class="viewer-tools" aria-label="Viewer color"><button type="button" class="swatch red" data-color="red" aria-label="Red viewer"></button><button type="button" class="swatch black" data-color="black" aria-label="Black viewer"></button><button type="button" class="swatch blue" data-color="blue" aria-label="Blue viewer"></button><button type="button" class="swatch white" data-color="white" aria-label="Gray viewer"></button></div><button type="button" id="share" aria-label="Share this reel">SHARE</button><button type="button" id="fullscreen">FULLSCREEN</button><div class="window"><img id="hero" alt="" /><p class="mount-label" id="mountLabel" aria-hidden="true"><span id="mountLine1"></span><span id="mountLine2"></span></p><button type="button" class="mount-tab" id="infoBtn" aria-expanded="false" aria-controls="infoDrawer">INFO ↻</button><aside class="info" id="infoDrawer" aria-labelledby="title" hidden><button type="button" class="info-close" id="infoClose" aria-label="Close details">✕</button><div class="kicker" id="code">DISC_01 / SERIES_A</div><h2 id="title">Night Studies</h2><p id="description"></p><div class="meta"><div id="locationMeta">LOCATION<strong id="location"></strong></div><div id="formatMeta">FORMAT<strong id="format"></strong></div><div id="captionMeta">CAPTION<strong id="caption"></strong></div><div id="dateMeta">DATE<strong id="date"></strong></div></div><div class="analog-meta" id="analog" aria-label="Camera settings"></div></aside></div><div class="controls" aria-label="Viewer controls"><div class="control-left"><button type="button" class="arrow" id="prev">← PREV IMAGE</button><button type="button" class="disc-nav" id="prevDisc">← DISC</button></div><span id="counter" aria-live="polite">01 - 01/07</span><div class="control-right"><button type="button" class="disc-nav" id="nextDisc">DISC →</button><button type="button" class="arrow" id="next">NEXT IMAGE →</button></div></div></div>
       <div class="slider" id="slider"><span class="slider-track" aria-hidden="true"></span><button type="button" class="thumb" id="lever" aria-label="Advance to the next image. Tap, press Enter, or drag down."><span class="grip" aria-hidden="true"></span><svg class="chev" viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1.5 L6 6.5 L11 1.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div><div class="toast" id="toast" role="status" aria-live="polite"></div><p class="turn-hint" aria-hidden="true">⟲ Turn your phone for full view</p></div><section class="discs" aria-labelledby="disc-heading"><div class="section-label"><span id="disc-heading">LOAD A DISC</span></div><div class="disc-shelf" id="discShelf"><div class="disc-row" id="discs" role="list" aria-labelledby="disc-heading"></div></div><div class="pack-switch" id="packs" role="group" aria-label="Filter discs by pack"></div></section>
     </section>
     
@@ -529,7 +580,7 @@
     function discNo(c){ return String(collections.indexOf(c)+1).padStart(2,'0'); }
     function reelLabel(c){ const t=esc((c.title||'').toUpperCase()), fs=Math.min(12,105/Math.max(1,(c.title||'').length*.6)), sub=esc(('DISC '+discNo(c)+(c.date?' · '+c.date:'')).toUpperCase()); return '<text x="100" y="84" text-anchor="middle" font-family="Arial Narrow,Arial,sans-serif" font-size="'+fs.toFixed(1)+'" font-weight="700" fill="#3a352d" letter-spacing=".5">'+t+'</text><text x="100" y="125" text-anchor="middle" font-family="Arial Narrow,Arial,sans-serif" font-size="6" fill="#3a352d" letter-spacing="1">'+sub+'</text><circle cx="100" cy="100" r="5" fill="#141414"/><circle cx="100" cy="100" r="7" fill="none" stroke="#b5ab95"/>'; }
     let reelToken=0, heroToken=0;
-    function renderReel(){ const reel=$('#reel'), wrap=$('#viewerWrap'); const n=Math.max(1,Math.min(14,collection.images.length)); const rotate=()=>{ const ring=reel.querySelector('.ring'); if(ring)ring.style.setProperty('--reel-rotation',(180-frame*360/n)+'deg'); }; const title=collection.title||''; $('#titleWindow').textContent=title; $('#titleWindow').style.setProperty('--title-size',Math.min(4.3,21/Math.max(1,title.length*.62))+'cqw'); $('#numWindow').textContent=String(frame+1).padStart(2,'0'); $('#fsHud').textContent=title+'  ·  '+String(frame+1).padStart(2,'0')+' / '+String(n).padStart(2,'0'); wrap.dataset.orientation='square';
+    function renderReel(){ const reel=$('#reel'), wrap=$('#viewerWrap'); const n=Math.max(1,Math.min(14,collection.images.length)); const rotate=()=>{ const ring=reel.querySelector('.ring'); if(ring)ring.style.setProperty('--reel-rotation',(180-frame*360/n)+'deg'); }; const title=collection.title||''; $('#titleWindow').textContent=title; $('#titleWindow').style.setProperty('--title-size',Math.min(3.1,15/Math.max(1,title.length*.62))+'cqw'); $('#numWindow').textContent=String(frame+1).padStart(2,'0'); $('#fsHud').textContent=title+'  ·  '+String(frame+1).padStart(2,'0')+' / '+String(n).padStart(2,'0'); wrap.dataset.orientation='square';
       if(loadedId===collection.id){ rotate(); return; }
       const first=loadedId===null; loadedId=collection.id; const token=++reelToken;
       const load=()=>{ if(token!==reelToken)return; reel.innerHTML='<svg class="ring" viewBox="0 0 200 200">'+reelRing(collection,-1)+'</svg><svg class="label" viewBox="0 0 200 200">'+reelLabel(collection)+'</svg>'; const ring=reel.querySelector('.ring'); ring.style.transition='none'; rotate(); void ring.offsetWidth; ring.style.transition=''; reel.style.opacity='1'; };
@@ -582,8 +633,8 @@
       win.addEventListener('touchend',finish);
       win.addEventListener('click',e=>{ if(swiped){ swiped=false; return; } if(!wrap.classList.contains('theater')&&!document.fullscreenElement)return; const r=win.getBoundingClientRect(), x=(e.clientX-r.left)/r.width; if(x<.3)prev(); else if(x>.7)advance(); });
       $('#share').onclick=e=>{ e.stopPropagation(); shareReel(); };
-      const drawer=$('#infoDrawer'), ib=$('#infoBtn'); const setInfo=open=>{ drawer.hidden=!open; ib.setAttribute('aria-expanded',String(open)); ib.textContent=open?'CLOSE':'INFO'; if(open)$('#infoClose').focus(); };
-      ib.onclick=e=>{ e.stopPropagation(); setInfo(drawer.hidden); }; $('#infoClose').onclick=e=>{ e.stopPropagation(); setInfo(false); ib.focus(); };
+      const drawer=$('#infoDrawer'), ib=$('#infoBtn'); const mwin=$('#viewer .window'); const setInfo=open=>{ drawer.hidden=!open; mwin.classList.toggle('flipped',open); ib.setAttribute('aria-expanded',String(open)); ib.textContent=open?'PHOTO ↻':'INFO ↻'; ib.setAttribute('aria-label',open?'Turn the slide back to the photo':'Turn the slide over for disc details'); };
+      ib.onclick=e=>{ e.stopPropagation(); setInfo(drawer.hidden); }; ib.addEventListener('pointerdown',e=>e.stopPropagation()); $('#infoClose').onclick=e=>{ e.stopPropagation(); setInfo(false); ib.focus(); };
       drawer.addEventListener('click',e=>e.stopPropagation()); drawer.addEventListener('pointerdown',e=>e.stopPropagation()); drawer.addEventListener('touchstart',e=>e.stopPropagation(),{passive:true});
       document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&!drawer.hidden){ setInfo(false); ib.focus(); } }); $('#hudPrevDisc').onclick=()=>$('#prevDisc').click(); $('#hudNextDisc').onclick=()=>$('#nextDisc').click();
       const mq=matchMedia('(orientation: landscape) and (max-height: 540px) and (pointer: coarse)');
