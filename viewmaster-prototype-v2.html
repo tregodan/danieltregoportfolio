@@ -632,7 +632,6 @@
     .viewer-wrap.theater #playBtn .pl { display:none; }
     .viewer-wrap.theater:has(.strip.on) .controls { opacity:0; pointer-events:none; }
     .viewer-wrap:is(:fullscreen,.theater) .window,.strip { -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
-    .viewer-wrap.zoomed .strip { opacity:0 !important; pointer-events:none !important; }
     .viewer-wrap.theater .fs-tools button { font-size:11px; padding:6px 8px; }
     @media (max-width:600px) { .viewer-wrap:is(:fullscreen,.theater) .fs-tools { left:90px; top:12px; } }
     .fs-progress { display:none; }
@@ -642,12 +641,6 @@
     .viewer-wrap:is(:fullscreen,.theater) :is(.controls,.fs-hud,.slider,.viewer-tools,#share,#fullscreen,.hud-disc,.fs-tools,.strip) { transition:opacity .5s ease; }
     .viewer-wrap:is(:fullscreen,.theater).idle :is(.controls,.fs-hud,.slider,.viewer-tools,#share,#fullscreen,.hud-disc,.fs-tools,.strip) { opacity:0 !important; pointer-events:none; }
     .viewer-wrap:is(:fullscreen,.theater).idle, .viewer-wrap:is(:fullscreen,.theater).idle * { cursor:none !important; }
-    /* 8 zoom */
-    .viewer-wrap:is(:fullscreen,.theater) .window { touch-action:none; }
-    .viewer-wrap:is(:fullscreen,.theater) .window img { transform-origin:0 0; will-change:transform; }
-    .viewer-wrap.zoomed .window img { cursor:grab; z-index:2; }
-    .viewer-wrap.zoomed.panning .window img { cursor:grabbing; }
-    .viewer-wrap.zoomed :is(.controls,.slider,.hud-disc,.strip) { opacity:.25; }
     /* 10 frame strip */
     .strip { display:none; }
     .viewer-wrap:is(:fullscreen,.theater) .strip { display:flex; position:absolute; z-index:4; left:50%; bottom:74px; transform:translate(-50%,16px); max-width:calc(100% - 40px); gap:6px; padding:8px; overflow-x:auto; background:rgba(10,10,10,.82); border-radius:10px; opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease; scrollbar-width:none; }
@@ -671,6 +664,18 @@
     .keys button { margin-top:18px; font:inherit; font-size:11px; letter-spacing:.16em; padding:9px 14px; border-radius:5px; border:1.5px solid #2a2620; background:transparent; cursor:pointer; }
     .keys button:focus-visible { outline:3px solid #d4473a; outline-offset:2px; }
     @media (prefers-reduced-motion:reduce) { .end-card.on { animation:none; } .viewer-wrap.playing .fs-progress { animation:none; } .strip { transition:none !important; } }
+
+    /* slideshow in the main viewer */
+    .viewer-wrap:not(:fullscreen):not(.theater) #playBtn { position:absolute; z-index:3; top:6.5cqw; left:calc(4cqw + 92px); font:inherit; font-size:10px; letter-spacing:.06em; padding:8px 11px; border-radius:4px; cursor:pointer; background:transparent; color:var(--mold-text,#f6ebdc); border:1.5px solid rgba(0,0,0,.3); box-shadow:inset 0 1.5px 0 rgba(255,255,255,.22), inset 0 -2px 0 rgba(0,0,0,.14); text-shadow:0 1px 0 rgba(0,0,0,.25); }
+    .viewer-wrap:not(:fullscreen):not(.theater) #playBtn:hover { background:rgba(255,255,255,.07); }
+    .viewer-wrap:not(:fullscreen):not(.theater) #playBtn[aria-pressed="true"] { background:rgba(0,0,0,.18); box-shadow:inset 0 2px 3px rgba(0,0,0,.3); color:#fff; }
+    #playBtn:focus-visible { outline:3px solid #ffd45c; outline-offset:2px; }
+    .viewer-wrap:not(:fullscreen):not(.theater) .fs-progress { display:block; position:absolute; z-index:2; left:3.2cqw; right:3.2cqw; top:1.3cqw; height:3px; width:auto; border-radius:2px; background:rgba(60,50,38,.12); }
+    .viewer-wrap:not(:fullscreen):not(.theater) .fs-progress:after { content:""; position:absolute; inset:0; border-radius:2px; background:#d4473a; transform:scaleX(0); transform-origin:0 50%; }
+    .viewer-wrap:not(:fullscreen):not(.theater):not(.playing) .fs-progress { display:none; }
+    .viewer-wrap.playing:not(:fullscreen):not(.theater) .fs-progress { animation:none; }
+    .viewer-wrap.playing:not(:fullscreen):not(.theater) .fs-progress:after { animation:fsProg var(--slide-ms,6000ms) linear forwards; }
+    @media (max-width:600px) { .viewer-wrap:not(:fullscreen):not(.theater) #playBtn { top:auto; bottom:var(--play-bottom,3.2cqw); left:4cqw; padding:6px 9px; font-size:9px; } .viewer-wrap:not(:fullscreen):not(.theater) .fs-progress { top:1.8cqw; } }
   </style>
 </head>
 <body data-boot="0">
@@ -815,8 +820,7 @@
     <dt><kbd>Space</kbd></dt><dd>Pull the lever</dd>
     <dt><kbd>[</kbd> <kbd>]</kbd></dt><dd>Previous / next disc</dd>
     <dt><kbd>F</kbd></dt><dd>Fullscreen on / off</dd>
-    <dt><kbd>P</kbd></dt><dd>Play / pause slideshow (fullscreen)</dd>
-    <dt><kbd>Z</kbd></dt><dd>Zoom, or double-click the photo (fullscreen)</dd>
+    <dt><kbd>P</kbd></dt><dd>Play / pause slideshow</dd>
     <dt><kbd>T</kbd></dt><dd>Frame strip (fullscreen)</dd>
     <dt><kbd>I</kbd></dt><dd>Disc details</dd>
     <dt><kbd>M</kbd></dt><dd>Lever sound on / off</dd>
@@ -847,7 +851,9 @@
   sb.onclick=e=>{ e.stopPropagation(); toggleSound(); }; syncSound();
   /* sound sits in the main viewer body, and joins the fullscreen tool cluster */
   const tools=$('#fsTools'), shareBtn=$('#share');
-  const placeSound=()=>{ if(isFs()){ if(sb.parentElement!==tools) tools.prepend(sb); } else if(sb.parentElement!==shareBtn.parentElement) shareBtn.after(sb); };
+  const placeSound=()=>{ const pb=$('#playBtn'), pr=$('#fsProgress'), face=$('#viewer');
+    if(isFs()){ if(sb.parentElement!==tools) tools.prepend(sb); if(pb.parentElement!==tools) sb.after(pb); if(pr.parentElement!==face) face.appendChild(pr); }
+    else { if(sb.parentElement!==face) shareBtn.after(sb); if(pb.parentElement!==face) $('#fullscreen').after(pb); if(pr.parentElement!==win) win.appendChild(pr); } };
 
   /* 1 · end-of-reel card */
   const card=$('#endCard'); let endOn=false;
@@ -877,56 +883,22 @@
     prevKey=key; prevDisc=collection.id;
     if(linkReady){ fxReady=true; store.set('vm-last',JSON.stringify({disc:discSlug(collection),frame}));
       if(window.vmResumed&&!greeted){ greeted=true; if(discSlug(collection)===vmResumed.disc&&(frame>0||collections.indexOf(collection)>0)) setTimeout(()=>toast('Welcome back — '+(collection.title||'')+', frame '+(frame+1)),900); } }
-    resetZoom(); buildStrip(); };
+    buildStrip(); };
 
   /* 7 · idle fade in fullscreen / theater */
   let idleT=null;
   function wake(){ wrap.classList.remove('idle'); clearTimeout(idleT); placeSound(); if(!isFs())return; idleT=setTimeout(()=>{ if(!isFs())return; let kb=false; try{ kb=!!wrap.querySelector(':focus-visible'); }catch(e){} if(kb||$('#keys').open)return; wrap.classList.add('idle'); strip.classList.remove('on'); },2600); }
   ['mousemove','pointerdown','touchstart','keydown','wheel'].forEach(ev=>document.addEventListener(ev,wake,{capture:true,passive:true}));
-  document.addEventListener('fullscreenchange',()=>{ if(!document.fullscreenElement){ setPlay(false); resetZoom(); strip.classList.remove('on'); } wake(); });
-  addEventListener('resize',()=>{ placeSound(); if(!isFs()){ setPlay(false); resetZoom(); } });
-
-  /* 8 · zoom + pan (fullscreen / theater) */
-  let z=1, tx=0, ty=0;
-  function applyZ(){ if(z<=1.01){ z=1; tx=0; ty=0; hero.style.transform=''; hero.style.clipPath=''; wrap.classList.remove('zoomed'); return; }
-    const W=hero.offsetWidth, H=hero.offsetHeight; tx=Math.min(0,Math.max(W-W*z,tx)); ty=Math.min(0,Math.max(H-H*z,ty));
-    hero.style.transform='translate('+tx.toFixed(1)+'px,'+ty.toFixed(1)+'px) scale('+z.toFixed(3)+')';
-    const l=-tx/z, t=-ty/z, r=W-(W-tx)/z, b=H-(H-ty)/z; hero.style.clipPath='inset('+t.toFixed(1)+'px '+r.toFixed(1)+'px '+b.toFixed(1)+'px '+l.toFixed(1)+'px round '+(10/z).toFixed(2)+'px)'; wrap.classList.add('zoomed'); }
-  function zoomAt(cx,cy,nz){ const r=hero.getBoundingClientRect(), left=r.left-tx, top=r.top-ty, px=(cx-r.left)/z, py=(cy-r.top)/z; z=Math.max(1,Math.min(4,nz)); tx=(cx-left)-px*z; ty=(cy-top)-py*z; applyZ(); }
-  function resetZoom(){ if(z!==1||hero.style.transform){ z=1; applyZ(); } }
-  function toggleZoomAt(cx,cy){ if(z>1) resetZoom(); else zoomAt(cx,cy,2.5); }
-  function toggleZoomCenter(){ const r=hero.getBoundingClientRect(); toggleZoomAt(r.left+r.width/2,r.top+r.height/2); }
-  const inCenter=(x)=>{ const r=win.getBoundingClientRect(), k=(x-r.left)/r.width; return k>=.3&&k<=.7; };
-  const block=e=>{ e.stopImmediatePropagation(); };
-  let lastTouch=0; win.addEventListener('touchend',()=>{ lastTouch=Date.now(); },{capture:true,passive:true});
-  win.addEventListener('dblclick',e=>{ if(!isFs()||endOn||Date.now()-lastTouch<900)return; if(z===1&&!inCenter(e.clientX))return; e.preventDefault(); toggleZoomAt(e.clientX,e.clientY); },true);
-  win.addEventListener('click',e=>{ if(z>1&&isFs()) block(e); },true);
-  let pan=null;
-  win.addEventListener('pointerdown',e=>{ if(z===1||!isFs()||e.pointerType==='touch')return; block(e); pan={x:e.clientX,y:e.clientY,tx,ty}; wrap.classList.add('panning'); },true);
-  addEventListener('pointermove',e=>{ if(!pan)return; tx=pan.tx+(e.clientX-pan.x); ty=pan.ty+(e.clientY-pan.y); applyZ(); });
-  addEventListener('pointerup',()=>{ if(pan){ pan=null; wrap.classList.remove('panning'); } });
-  let pinch=null, tpan=null, gesture=false, lastTap=null, tap0=null;
-  const dist=(a,b)=>Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);
-  win.addEventListener('touchstart',e=>{ if(!isFs())return; const ts=e.touches;
-    if(ts.length===2){ gesture=true; pinch={d:dist(ts[0],ts[1]),z,mx:(ts[0].clientX+ts[1].clientX)/2,my:(ts[0].clientY+ts[1].clientY)/2}; tpan=null; tap0=null; block(e); return; }
-    if(ts.length===1){ tap0={x:ts[0].clientX,y:ts[0].clientY,t:Date.now()}; if(z>1){ gesture=true; tpan={x:ts[0].clientX,y:ts[0].clientY,tx,ty}; block(e); } } },{capture:true,passive:true});
-  win.addEventListener('touchmove',e=>{ if(!gesture)return; block(e); const ts=e.touches;
-    if(pinch&&ts.length===2){ const nz=pinch.z*dist(ts[0],ts[1])/pinch.d; zoomAt(pinch.mx,pinch.my,nz); }
-    else if(tpan&&ts.length===1){ tx=tpan.tx+(ts[0].clientX-tpan.x); ty=tpan.ty+(ts[0].clientY-tpan.y); applyZ(); } },{capture:true,passive:true});
-  win.addEventListener('touchend',e=>{ const t=e.changedTouches[0];
-    if(tap0&&t&&e.touches.length===0&&Math.hypot(t.clientX-tap0.x,t.clientY-tap0.y)<12&&Date.now()-tap0.t<280&&isFs()&&!endOn){ const now=Date.now();
-      if(lastTap&&now-lastTap.t<320&&Math.hypot(t.clientX-lastTap.x,t.clientY-lastTap.y)<36&&(z>1||inCenter(t.clientX))){ lastTap=null; toggleZoomAt(t.clientX,t.clientY); gesture=true; }
-      else lastTap={x:t.clientX,y:t.clientY,t:now}; }
-    if(gesture){ block(e); if(e.touches.length===0){ gesture=false; pinch=null; tpan=null; } else if(e.touches.length===1&&pinch){ pinch=null; tpan={x:e.touches[0].clientX,y:e.touches[0].clientY,tx,ty}; } } },true);
-  document.addEventListener('gesturestart',e=>{ if(isFs())e.preventDefault(); });
+  document.addEventListener('fullscreenchange',()=>{ if(!document.fullscreenElement){ strip.classList.remove('on'); } wake(); });
+  addEventListener('resize',placeSound);
 
   /* 9 · slideshow */
   let playing=false, playT=null; const SLIDE=6000; const pb=$('#playBtn'), prog=$('#fsProgress');
   wrap.style.setProperty('--slide-ms',SLIDE+'ms');
-  function restartProg(){ prog.style.animation='none'; void prog.offsetWidth; prog.style.animation=''; }
+  function restartProg(){ prog.style.display='none'; void prog.offsetWidth; prog.style.display=''; }
   function schedule(){ clearTimeout(playT); restartProg(); playT=setTimeout(step,SLIDE); }
-  function step(){ if(!playing||!isFs())return setPlay(false); auto=true; try{ if(frame>=collection.images.length-1) changeDisc(1); else { frame++; render(); } } finally { auto=false; } schedule(); }
-  function setPlay(on){ on=!!on&&isFs(); if(playing===on&&!on)return; playing=on; clearTimeout(playT); wrap.classList.toggle('playing',on); pb.setAttribute('aria-pressed',String(on)); pb.innerHTML=on?'❚❚<span class="pl"> PAUSE</span>':'▶<span class="pl"> PLAY</span>'; pb.setAttribute('aria-label',on?'Pause slideshow':'Play slideshow'); if(on){ resetZoom(); schedule(); } }
+  function step(){ if(!playing)return; if(document.hidden||document.querySelector('dialog[open]')){ schedule(); return; } auto=true; try{ if(frame>=collection.images.length-1) changeDisc(1); else { frame++; render(); } } finally { auto=false; } schedule(); }
+  function setPlay(on){ on=!!on; if(playing===on&&!on)return; playing=on; clearTimeout(playT); wrap.classList.toggle('playing',on); pb.setAttribute('aria-pressed',String(on)); pb.innerHTML=on?'❚❚<span class="pl"> PAUSE</span>':'▶<span class="pl"> PLAY</span>'; pb.setAttribute('aria-label',on?'Pause slideshow':'Play slideshow'); if(on) schedule(); }
   pb.onclick=e=>{ e.stopPropagation(); setPlay(!playing); };
 
   /* 10 · frame strip */
@@ -936,10 +908,10 @@
   ['pointerdown','touchstart','dblclick'].forEach(ev=>strip.addEventListener(ev,e=>e.stopPropagation(),{passive:true}));
   strip.addEventListener('click',e=>{ e.stopPropagation(); const b=e.target.closest('button'); if(!b)return; frame=+b.dataset.j; render(); });
   function toggleStrip(force){ const on=force??!strip.classList.contains('on'); strip.classList.toggle('on',on); buildStrip(); if(on&&!coarse.matches) (strip.querySelector('[aria-current="true"]')||strip.querySelector('button'))?.focus({preventScroll:true}); }
-  document.addEventListener('mousemove',e=>{ if(!isFs()||z>1)return; const h=innerHeight; if(e.clientY>h-150) strip.classList.add('on'); else if(e.clientY<h-230&&!strip.contains(document.activeElement)) strip.classList.remove('on'); },{passive:true});
+  document.addEventListener('mousemove',e=>{ if(!isFs())return; const h=innerHeight; if(e.clientY>h-150) strip.classList.add('on'); else if(e.clientY<h-230&&!strip.contains(document.activeElement)) strip.classList.remove('on'); },{passive:true});
   let vy=null, vx=0;
   win.addEventListener('touchstart',e=>{ if(e.touches.length===1){ vy=e.touches[0].clientY; vx=e.touches[0].clientX; } else vy=null; },{passive:true});
-  win.addEventListener('touchend',e=>{ if(vy===null||!isFs()||z>1)return; const t=e.changedTouches[0], dy=t.clientY-vy, dx=t.clientX-vx; vy=null; if(Math.abs(dy)>50&&Math.abs(dy)>Math.abs(dx)*1.3){ strip.classList.toggle('on',dy<0); if(dy<0) buildStrip(); } },{passive:true});
+  win.addEventListener('touchend',e=>{ if(vy===null||!isFs())return; const t=e.changedTouches[0], dy=t.clientY-vy, dx=t.clientX-vx; vy=null; if(Math.abs(dy)>50&&Math.abs(dy)>Math.abs(dx)*1.3){ strip.classList.toggle('on',dy<0); if(dy<0) buildStrip(); } },{passive:true});
 
   /* 11 · shortcuts */
   const keys=$('#keys');
@@ -950,7 +922,7 @@
   addEventListener('keydown',e=>{ if(e.metaKey||e.ctrlKey||e.altKey)return; if(e.target.closest?.('input,textarea,select,[contenteditable="true"]'))return;
     if(e.key==='?'){ e.preventDefault(); keys.open?keys.close():(!$('#sleeve').open&&openKeys()); return; }
     if(document.querySelector('dialog[open]'))return;
-    if(e.key==='Escape'&&isFs()){ if(z>1) resetZoom(); else if(strip.classList.contains('on')) strip.classList.remove('on'); else if(playing) setPlay(false); return; }
+    if(e.key==='Escape'&&isFs()){ if(strip.classList.contains('on')) strip.classList.remove('on'); else if(playing) setPlay(false); return; }
     switch(e.key.toLowerCase()){
       case 'f': $('#fullscreen').click(); break;
       case '[': changeDisc(-1); break;
@@ -958,14 +930,13 @@
       case 'i': if(!isFs()) openSleeve(); break;
       case 'm': toggleSound(); break;
       case 's': shareReel(); break;
-      case 'p': if(isFs()) setPlay(!playing); break;
-      case 'z': if(isFs()) toggleZoomCenter(); break;
+      case 'p': setPlay(!playing); break;
       case 't': if(isFs()) toggleStrip(); break;
       default: return; }
     e.preventDefault(); });
 
   placeSound(); buildStrip(); wake();
-  window.vmDebug={showEnd,setPlay,zoomAt,resetZoom,toggleStrip,get z(){return z},get playing(){return playing},get endOn(){return endOn}};
+  window.vmDebug={showEnd,setPlay,toggleStrip,get playing(){return playing},get endOn(){return endOn}};
 })();
 
 </script>
