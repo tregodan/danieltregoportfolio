@@ -439,6 +439,13 @@
     .reel .ring { transition:transform .35s ease; }
     .reel.in,.reel.out { animation:none; }
     .viewer-wrap .window img { transition:none; }
+    /* regular viewer: fixed square window with a cardboard slide mount (fullscreen/sideways keep native size) */
+    .viewer-wrap[data-orientation="square"] { width:min(100%, calc((100svh - 215px) / 1.3), 640px); }
+    .viewer-wrap:not(:fullscreen):not(.theater) .window { position:relative; width:100%; max-width:100%; aspect-ratio:1; margin:0; padding:0;
+      background:radial-gradient(circle at 30% 20%, rgba(255,255,255,.35), transparent 60%), #e6dfcf; }
+    .viewer-wrap:not(:fullscreen):not(.theater) .window:before { content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; box-shadow:inset 0 0 0 1px rgba(0,0,0,.08), inset 0 2px 6px rgba(0,0,0,.18); }
+    .viewer-wrap:not(:fullscreen):not(.theater) .window img { position:absolute; inset:5cqw; margin:auto; width:auto; height:auto; max-width:calc(100% - 10cqw); max-height:calc(100% - 10cqw); object-fit:contain; background:transparent; border-radius:2px; box-shadow:0 0 0 1px rgba(0,0,0,.35), 0 1px 4px rgba(0,0,0,.25); }
+    @media (max-width:600px) { .viewer-wrap:not(:fullscreen):not(.theater) .window img { inset:4cqw; max-width:calc(100% - 8cqw); max-height:calc(100% - 8cqw); } }
   </style>
 </head>
 <body data-boot="0">
@@ -480,7 +487,7 @@
     function discNo(c){ return String(collections.indexOf(c)+1).padStart(2,'0'); }
     function reelLabel(c){ const t=esc((c.title||'').toUpperCase()), fs=Math.min(12,105/Math.max(1,(c.title||'').length*.6)), sub=esc(('DISC '+discNo(c)+(c.date?' · '+c.date:'')).toUpperCase()); return '<text x="100" y="84" text-anchor="middle" font-family="Arial Narrow,Arial,sans-serif" font-size="'+fs.toFixed(1)+'" font-weight="700" fill="#3a352d" letter-spacing=".5">'+t+'</text><text x="100" y="125" text-anchor="middle" font-family="Arial Narrow,Arial,sans-serif" font-size="6" fill="#3a352d" letter-spacing="1">'+sub+'</text><circle cx="100" cy="100" r="5" fill="#141414"/><circle cx="100" cy="100" r="7" fill="none" stroke="#b5ab95"/>'; }
     let reelToken=0, heroToken=0;
-    function renderReel(){ const reel=$('#reel'), wrap=$('#viewerWrap'); const n=Math.max(1,Math.min(14,collection.images.length)); const rotate=()=>{ const ring=reel.querySelector('.ring'); if(ring)ring.style.setProperty('--reel-rotation',(180-frame*360/n)+'deg'); }; const title=collection.title||''; $('#titleWindow').textContent=title; $('#titleWindow').style.setProperty('--title-size',Math.min(4.3,21/Math.max(1,title.length*.62))+'cqw'); $('#numWindow').textContent=String(frame+1).padStart(2,'0'); $('#fsHud').textContent=title+'  ·  '+String(frame+1).padStart(2,'0')+' / '+String(n).padStart(2,'0'); wrap.dataset.orientation=collection.orientation||'landscape';
+    function renderReel(){ const reel=$('#reel'), wrap=$('#viewerWrap'); const n=Math.max(1,Math.min(14,collection.images.length)); const rotate=()=>{ const ring=reel.querySelector('.ring'); if(ring)ring.style.setProperty('--reel-rotation',(180-frame*360/n)+'deg'); }; const title=collection.title||''; $('#titleWindow').textContent=title; $('#titleWindow').style.setProperty('--title-size',Math.min(4.3,21/Math.max(1,title.length*.62))+'cqw'); $('#numWindow').textContent=String(frame+1).padStart(2,'0'); $('#fsHud').textContent=title+'  ·  '+String(frame+1).padStart(2,'0')+' / '+String(n).padStart(2,'0'); wrap.dataset.orientation='square';
       if(loadedId===collection.id){ rotate(); return; }
       const first=loadedId===null; loadedId=collection.id; const token=++reelToken;
       const load=()=>{ if(token!==reelToken)return; reel.innerHTML='<svg class="ring" viewBox="0 0 200 200">'+reelRing(collection,-1)+'</svg><svg class="label" viewBox="0 0 200 200">'+reelLabel(collection)+'</svg>'; const ring=reel.querySelector('.ring'); ring.style.transition='none'; rotate(); void ring.offsetWidth; ring.style.transition=''; reel.style.opacity='1'; };
