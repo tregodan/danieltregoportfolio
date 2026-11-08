@@ -590,6 +590,9 @@
       .sleeve-close { top:16px; right:12px; }
       .sf-thumb { width:72px; height:48px; } .sf-thumb img { max-width:66px; max-height:42px; }
     }
+    /* phones: INFO moves to the viewer face so photos keep their height */
+    .viewer-wrap:not(:fullscreen):not(.theater) .mount-tab.on-face { right:auto; bottom:auto; top:6.5cqw; left:4cqw; z-index:3; padding:6px 8px; font:inherit; font-size:9px; letter-spacing:.06em; border-radius:4px; color:var(--mold-text,#f6ebdc); border:1.5px solid rgba(0,0,0,.3); box-shadow:inset 0 1.5px 0 rgba(255,255,255,.22), inset 0 -2px 0 rgba(0,0,0,.14); text-shadow:0 1px 0 rgba(0,0,0,.25); }
+    @media (max-width:600px) { .viewer-wrap:not(:fullscreen):not(.theater) .window img { max-height:calc(100% - 10cqw); } .viewer-wrap:not(:fullscreen):not(.theater) .mount-label { right:4cqw; bottom:2cqw; } }
   </style>
 </head>
 <body data-boot="0">
@@ -717,6 +720,7 @@
     })();
     $('#discShelf').addEventListener('scroll',()=>requestAnimationFrame(focusWheel),{passive:true}); $('#discs').addEventListener('scroll',()=>requestAnimationFrame(focusWheel),{passive:true});
     if(['black','white'].includes($('#viewer').dataset.color))$('#viewer').dataset.color='red';
+    (function(){ const ib=$('#infoBtn'), win=$('#viewer .window'), face=$('#viewer'), mq=matchMedia('(max-width: 600px)'); const place=()=>{ if(mq.matches){ if(ib.parentElement!==face){ face.appendChild(ib); ib.classList.add('on-face'); } } else if(ib.parentElement!==win){ win.appendChild(ib); ib.classList.remove('on-face'); } }; mq.addEventListener?.('change',place); place(); })();
     $('#sleeveClose').onclick=()=>$('#sleeve').close(); $('#sleeve').addEventListener('click',e=>{ if(e.target===$('#sleeve'))$('#sleeve').close(); }); $('#sleeve').addEventListener('close',()=>$('#infoBtn').focus());
     syncDiscAccent(); syncSwatches(); render(); fetch('content/portfolio.json',{cache:'no-store'}).then(response=>{if(!response.ok)throw new Error('content unavailable');return response.json()}).then(data=>{packs=normalizePacks(data.packs);collections=normalizeCollections(data.discs||[],false);alignPackMembership();const q=new URLSearchParams(location.search), want=(q.get('disc')||'').toLowerCase(); collection=collections.find(c=>discSlug(c)===want||String(c.id).toLowerCase()===want)||collections[0]||collection; loadedId=null; activePack='ALL'; frame=Math.max(0,Math.min(collection.images.length-1,(parseInt(q.get('frame'),10)||1)-1)); linkReady=true; buildPacks(); buildDiscs(); render(); boot()}).catch(()=>boot());
   </script>
