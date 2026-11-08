@@ -897,7 +897,7 @@
   wrap.style.setProperty('--slide-ms',SLIDE+'ms');
   function restartProg(){ prog.style.display='none'; void prog.offsetWidth; prog.style.display=''; }
   function schedule(){ clearTimeout(playT); restartProg(); playT=setTimeout(step,SLIDE); }
-  function step(){ if(!playing)return; if(document.hidden||document.querySelector('dialog[open]')){ schedule(); return; } auto=true; try{ if(frame>=collection.images.length-1) changeDisc(1); else { frame++; render(); } } finally { auto=false; } schedule(); }
+  function step(){ if(!playing)return; if(document.hidden||document.querySelector('dialog[open]')){ schedule(); return; } auto=true; pullLever(); try{ if(frame>=collection.images.length-1) changeDisc(1); else { frame++; render(); } } finally { auto=false; } schedule(); }
   function setPlay(on){ on=!!on; if(playing===on&&!on)return; playing=on; clearTimeout(playT); wrap.classList.toggle('playing',on); pb.setAttribute('aria-pressed',String(on)); pb.innerHTML=on?'❚❚<span class="pl"> PAUSE</span>':'▶<span class="pl"> PLAY</span>'; pb.setAttribute('aria-label',on?'Pause slideshow':'Play slideshow'); if(on) schedule(); }
   pb.onclick=e=>{ e.stopPropagation(); setPlay(!playing); };
 
