@@ -75,7 +75,7 @@
   <div class="shell">
     <header class="topbar"><a class="site-title" href="/">DANIEL TREGO</a><div class="conn" id="conn"><span class="dot" aria-hidden="true"></span><span id="connText">Not connected</span><button type="button" id="connBtn">Connect GitHub</button></div></header>
     <div class="page-mark"><b>Photo picker</b><span>CHOOSE THE FRAMES.</span></div>
-    <p class="help" id="help">Add a Lightroom album, click photos in the order you want them on the disc (up to 14), then save. The site updates about a minute later.</p>
+    <p class="help" id="help">Add a Lightroom or iCloud shared album, click photos in the order you want them on the disc (up to 14), then save. The site updates about a minute later.</p>
 
     <div class="bar">
       <label for="album" class="count">Disc</label>
@@ -88,7 +88,7 @@
     </div>
 
     <form class="panel" id="addPanel" hidden novalidate>
-      <label class="field grow">Lightroom share link<input id="newUrl" type="url" placeholder="https://adobe.ly/…" required></label>
+      <label class="field grow">Lightroom or iCloud shared album link<input id="newUrl" type="url" placeholder="https://adobe.ly/… or https://www.icloud.com/sharedalbum/#…" required></label>
       <label class="field">Disc name (optional)<input id="newTitle" placeholder="Album name"></label>
       <label class="field">Pack<select id="newPack"></select></label>
       <label class="field" id="newPackNameWrap" hidden>New pack name<input id="newPackName" placeholder="Pack name"></label>
@@ -194,7 +194,7 @@
       $('#connBtn').textContent = token ? 'Disconnect' : 'Connect GitHub';
       $('#save').hidden = !token; $('#addBtn').hidden = !token;
       $('#help').textContent = token
-        ? 'Add a Lightroom album, click photos in the order you want them on the disc (up to 14), then Save to disc. The site updates about a minute later.'
+        ? 'Add a Lightroom or iCloud shared album, click photos in the order you want them on the disc (up to 14), then Save to disc. The site updates about a minute later.'
         : 'Click photos in the order you want them on the disc (up to 14), then Copy selection and paste it into Photos to use in Pages CMS. Connect GitHub to add albums and save from here.';
     }
     function renderList(keepUrl) {
@@ -220,7 +220,7 @@
       const grid = $('#grid'), e = current;
       ['#first', '#liked', '#clear', '#save', '#copy'].forEach((s) => ($(s).disabled = !e?.sheet));
       if (!e) { grid.innerHTML = `<p class="empty">${token ? 'No discs yet — click + Add album to start.' : 'No albums yet.'}</p>`; $('#meta').textContent = ''; sync(); return; }
-      if (!e.sheet) { grid.innerHTML = '<p class="loading"><span class="spin" aria-hidden="true"></span>Loading photos from Lightroom — usually about a minute. You can leave this open.</p>'; $('#meta').textContent = ''; sync(); return; }
+      if (!e.sheet) { grid.innerHTML = '<p class="loading"><span class="spin" aria-hidden="true"></span>Loading photos from the album — usually about a minute. You can leave this open.</p>'; $('#meta').textContent = ''; sync(); return; }
       grid.innerHTML = '';
       e.sheet.photos.forEach((p, i) => {
         const b = document.createElement('button');
@@ -293,14 +293,14 @@
     $('#addPanel').addEventListener('submit', async (e) => {
       e.preventDefault();
       const url = norm($('#newUrl').value), title = $('#newTitle').value.trim(), pack = packFrom($('#newPack'), $('#newPackName'));
-      if (!/^https:\/\/(adobe\.ly|lightroom\.adobe\.com)\//i.test(url)) return ($('#addErr').textContent = 'Paste a Lightroom share link (it starts with https://adobe.ly/ or https://lightroom.adobe.com/).');
+      if (!/^https:\/\/(adobe\.ly|lightroom\.adobe\.com|(www\.)?icloud\.com\/sharedalbum)\//i.test(url)) return ($('#addErr').textContent = 'Paste a Lightroom share link (https://adobe.ly/…) or an iCloud shared album link (https://www.icloud.com/sharedalbum/#…).');
       if ($('#newPack').value === '__new' && !pack) return ($('#addErr').textContent = 'Type a name for the new pack.');
       if (entries().some((x) => x.url === url)) return ($('#addErr').textContent = 'That album is already a disc.');
       try {
         setStatus('Adding disc…', true);
         await commit(`Picker: add disc ${title || url}`, (d) => { ensurePack(d, pack); d.discs = d.discs || []; const disc = { album: url }; if (title) disc.title = title; if (pack) disc.pack = pack; d.discs.push(disc); });
         $('#addPanel').hidden = true; $('#newUrl').value = ''; $('#newTitle').value = '';
-        setStatus('Disc added. Loading its photos from Lightroom — about a minute.');
+        setStatus('Disc added. Loading its photos — about a minute.');
         renderList(url);
       } catch (err) { $('#addErr').textContent = err.message; setStatus(''); }
     });
