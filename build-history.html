@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Build history — Daniel Trego</title>
+  <meta name="description" content="How the Frame by Frame View-Master photo portfolio was designed and built, with the options weighed at each step.">
+  <meta property="og:title" content="Frame by Frame — build history">
+  <meta property="og:description" content="How a static mockup became a working View-Master photo portfolio in five days.">
+  <meta property="og:image" content="https://danieltrego.com/build-history/04-current.jpg">
+  <style>
+    :root { --paper:#e8e4d9; --card:#ece5d4; --ink:#2f2a23; --soft:#6d6556; --red:#bc3f31; --line:#4d4a43; --rule:#cfc4ac; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:#161616; color:var(--paper); font:14px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:.03em; }
+    a { color:inherit; }
+    .shell { width:min(1200px, calc(100vw - 48px)); margin:auto; padding:18px 0 48px; }
+    .topbar { display:flex; justify-content:space-between; align-items:center; gap:18px; padding-bottom:14px; border-bottom:1px solid var(--line); flex-wrap:wrap; }
+    .site-title { color:var(--paper); text-decoration:none; font:28px/1 Impact,Haettenschweiler,"Arial Narrow Bold",sans-serif; letter-spacing:-.01em; }
+    .site-title:hover { color:var(--red); }
+    .page-mark { display:flex; align-items:baseline; gap:12px; font-size:11px; text-transform:uppercase; }
+    .page-name { color:var(--red); letter-spacing:.14em; }
+    .page-tag { font-size:15px; letter-spacing:.04em; }
+    .site-nav { display:flex; gap:18px; }
+    .site-nav a { color:#b7b0a3; text-decoration:none; font-size:11px; border-bottom:1px solid #5d584e; padding-bottom:4px; }
+    .site-nav a:hover, .site-nav a:focus-visible { color:var(--paper); border-color:var(--red); }
+
+    /* the article is a printed reel sleeve */
+    .sleeve { margin:28px auto 0; max-width:880px; background:radial-gradient(circle at 20% 0%, rgba(255,255,255,.35), transparent 55%), var(--card); color:var(--ink); border-radius:4px; box-shadow:0 0 0 1px rgba(0,0,0,.4); overflow:hidden; }
+    .band { height:10px; background:var(--red); }
+    article { padding:44px clamp(20px, 6vw, 72px) 56px; font:17px/1.6 Georgia,"Times New Roman",serif; letter-spacing:0; }
+    .kicker { font:700 11px/1 "Arial Narrow","Franklin Gothic Medium",Arial,sans-serif; letter-spacing:.2em; color:var(--red); text-transform:uppercase; }
+    h1, h2, h3 { font-family:"Arial Narrow","Franklin Gothic Medium","Helvetica Neue Condensed",Arial,sans-serif; text-transform:uppercase; letter-spacing:.04em; line-height:1.1; color:var(--ink); }
+    h1 { font-size:clamp(34px, 6vw, 56px); margin:.3em 0 .25em; }
+    h2 { font-size:24px; margin:2.2em 0 .6em; padding-top:1.1em; border-top:1px solid var(--rule); }
+    h3 { font-size:17px; margin:1.8em 0 .5em; letter-spacing:.08em; }
+    .lede { font-size:20px; line-height:1.5; margin:.4em 0 1.2em; }
+    .meta { font:12px/1.4 ui-monospace,Menlo,monospace; color:var(--soft); letter-spacing:.06em; }
+    p { margin:0 0 1em; }
+    ul, ol { margin:0 0 1.2em; padding-left:1.3em; }
+    li { margin:.35em 0; }
+    strong { color:#1f1b16; }
+    code { font:.82em ui-monospace,Menlo,monospace; background:rgba(60,50,38,.08); padding:.1em .35em; border-radius:3px; }
+    .table-wrap { overflow-x:auto; margin:1em 0 1.6em; }
+    table { width:100%; border-collapse:collapse; font:14px/1.45 "Arial Narrow","Franklin Gothic Medium",Arial,sans-serif; letter-spacing:.01em; }
+    th { text-align:left; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--soft); border-bottom:1.5px solid var(--ink); padding:8px 10px 6px 0; }
+    td { border-bottom:1px solid var(--rule); padding:9px 12px 9px 0; vertical-align:top; }
+    td:first-child { font-weight:700; }
+    figure { margin:1.4em 0 1.8em; }
+    figure img { display:block; width:100%; height:auto; border-radius:3px; box-shadow:0 0 0 1px rgba(40,34,26,.25); background:#fff; }
+    figure.shot img { box-shadow:0 0 0 1px rgba(40,34,26,.55), 0 0 0 6px #f6f2e9, 0 0 0 7px rgba(40,34,26,.18); margin:7px 0; }
+    figure.narrow { max-width:420px; margin-left:auto; margin-right:auto; }
+    figcaption { margin-top:10px; font:13px/1.45 "Arial Narrow","Franklin Gothic Medium",Arial,sans-serif; color:var(--soft); letter-spacing:.02em; }
+    .pair { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+    .note { font-size:15px; color:var(--soft); font-style:italic; }
+    .back { display:inline-block; margin-top:28px; font:12px ui-monospace,Menlo,monospace; letter-spacing:.12em; text-decoration:none; color:var(--red); border-bottom:1px solid currentColor; }
+    .footer { margin-top:30px; display:flex; justify-content:space-between; border-top:1px solid var(--line); padding-top:14px; color:#756f65; font-size:10px; }
+    @media (max-width:640px) {
+      .shell { width:calc(100vw - 24px); }
+      .site-title { font-size:22px; }
+      .page-tag { font-size:13px; }
+      article { font-size:16px; }
+      .pair { grid-template-columns:1fr; }
+      .footer { flex-direction:column; gap:8px; }
+    }
+    a:focus-visible { outline:3px solid #ffd45c; outline-offset:2px; }
+  </style>
+</head>
+<body>
+<main class="shell">
+  <header class="topbar">
+    <a class="site-title" href="/">DANIEL TREGO</a>
+    <div class="page-mark"><span class="page-name">BUILD HISTORY</span><span class="page-tag">FRAME BY FRAME.</span></div>
+    <nav class="site-nav" aria-label="Primary navigation"><a href="viewmaster-prototype-v2.html">PHOTO</a><a href="high-scores.html">HIGH SCORES</a></nav>
+  </header>
+
+  <div class="sleeve">
+    <div class="band" aria-hidden="true"></div>
+    <article>
+      <div class="kicker">Case study · Nov 5–9, 2026</div>
+      <h1>Frame by Frame</h1>
+      <p class="lede">In five days, a static View-Master mockup became a working photo portfolio. Photos come from Lightroom or Apple Photos, get chosen in a picker, and publish on their own.</p>
+      <p>The idea: a portfolio you <em>load</em> rather than scroll. Each series is a cardboard reel, each photo a frame, and you advance by pulling the lever. The work had two halves: designing a viewer that feels physical without getting in the way of the photos, and building a back office simple enough to keep it full.</p>
+
+      <div class="table-wrap"><table>
+        <thead><tr><th></th><th>Before</th><th>After</th></tr></thead>
+        <tbody>
+          <tr><td>Viewer</td><td>One static prototype page</td><td>A static player with reel, die-cut mat, lever, fullscreen, phone-sideways mode and slideshow</td></tr>
+          <tr><td>Photos</td><td>Image links typed in by hand</td><td>Paste a Lightroom or iCloud shared album link; a picker chooses up to 14 frames per disc</td></tr>
+          <tr><td>Publishing</td><td>Manual</td><td>A save publishes in 1–2 minutes; albums refresh daily</td></tr>
+          <tr><td>Sharing</td><td>None</td><td>Reel links with preview cards and the system share sheet</td></tr>
+        </tbody>
+      </table></div>
+      <p>About 35 viewer iterations shipped. Almost every one came from a review of the live page, often after a round of mockups.</p>
+
+      <h2>Starting point</h2>
+      <p>The project began as a first prototype with a CMS already in place. That page stays untouched as the reference, and every change went into a new page so each step could be compared against where it started.</p>
+      <p>What was missing: the disc didn't read as loaded into the viewer, photos were forced into one shape, phones were an afterthought, and adding photos was slow.</p>
+      <figure class="shot"><img src="build-history/01-v1.jpg" alt="The first prototype: a red View-Master with the photo inside and disc details beside it" loading="lazy" width="800" height="500"><figcaption>v1: the starting prototype. The viewer and disc details sit side by side, and the disc shelf is below the fold.</figcaption></figure>
+
+      <h2>Designing the viewer</h2>
+      <p>The viewer settled into a calm, static player: the reel sits in a notch behind the body, the photo sits in a die-cut cardboard mat, and only the reel moves.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Problem</th><th>What stayed</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td>Disc and viewer read as two things</td><td>The reel loaded behind the viewer, its top half showing through a notch</td><td>It looks like a physical reel in a real View-Master</td></tr>
+          <tr><td>Proportions didn't match</td><td>A wide, angular, flat-bottomed notch, with the reel scaled to fill it</td><td>The deep scoop looked wrong; angular matched the original</td></tr>
+          <tr><td>Disc design</td><td>Tinted thumbnails in the windows, up to 14 frames per reel</td><td>Shows the real photos while keeping the reel's colour</td></tr>
+          <tr><td>Title and numbers</td><td>A trapezoid title window plus a small frame-number window</td><td>Reads as printed on the viewer</td></tr>
+          <tr><td>The viewer kept moving</td><td>Only the reel turns; a quick fade on a disc change</td><td>Motion pulled attention from the photos</td></tr>
+          <tr><td>Photo framing</td><td>A die-cut cardboard mat with an even cut edge, no shading</td><td>Feels like a slide mount; nothing competes with the photo</td></tr>
+          <tr><td>Advancing</td><td>An orange thumb-slider lever, with the arrows kept</td><td>The lever is the signature move; the arrows keep it accessible</td></tr>
+          <tr><td>Colour</td><td>Red and blue on the viewer; black or white in fullscreen</td><td>Fewer choices, and fullscreen stays neutral</td></tr>
+        </tbody>
+      </table></div>
+      <figure class="shot"><img src="build-history/02-scoop.jpg" alt="Early version with a deep circular scoop at the top of the viewer" loading="lazy" width="800" height="500"><figcaption>Nov 5: the first loaded-reel attempt, a deep scoop with the title window. Too deep and too circular.</figcaption></figure>
+      <figure class="shot"><img src="build-history/03-golden.jpg" alt="Golden-ratio silhouette with a larger reel and frame-number window" loading="lazy" width="800" height="500"><figcaption>Nov 5: the golden-ratio silhouette, with a larger reel and the frame-number window. Closer, but the top was still too soft.</figcaption></figure>
+      <figure class="shot"><img src="build-history/04-current.jpg" alt="The current viewer with angular notch, die-cut mat and disc rack" loading="lazy" width="800" height="500"><figcaption>Nov 9: the shipped viewer. Angular notch, reel scaled to fill it, die-cut mat, lever on the right, two-column page.</figcaption></figure>
+
+      <h3>Options we weighed</h3>
+      <p class="note">The mockup rounds, redrawn as wireframes. Picks are outlined.</p>
+      <figure><img src="build-history/opt-disc-position.jpg" alt="Disc position options: loaded behind (picked), beside the viewer, shelf below" loading="lazy" width="1344" height="558"></figure>
+      <figure><img src="build-history/opt-viewer-top.jpg" alt="Viewer top options: deep scoop, golden ratio 1 (picked), golden ratio 2 and 3, angular notch (final)" loading="lazy" width="1344" height="558"></figure>
+      <figure><img src="build-history/opt-disc-windows.jpg" alt="Disc window options: coloured, thumbnails, tinted thumbnails (picked)" loading="lazy" width="1344" height="558"></figure>
+      <figure><img src="build-history/opt-mat.jpg" alt="Photo frame options: thin cut edge (picked), shaded bevel, rounded window, backlit glow" loading="lazy" width="1344" height="558"></figure>
+      <figure><img src="build-history/opt-lever.jpg" alt="Lever options: round knob, angled lever, thumb slider (picked)" loading="lazy" width="1344" height="558"></figure>
+
+      <h2>Getting photos in</h2>
+      <p>Adding a disc takes one paste: drop an album's share link into the CMS, and the photos appear on the site about a minute later. A picker chooses which frames make the disc.</p>
+      <ol>
+        <li><strong>Lightroom import.</strong> Public Lightroom share links are read directly, with no Adobe login. Each photo comes with its caption, date and camera settings, and the disc's orientation is worked out automatically.</li>
+        <li><strong>Apple Photos import.</strong> Shared albums with Public Website turned on work the same way. iCloud's photo links expire, so chosen photos are copied onto the site.</li>
+        <li><strong>Sync rules.</strong> Removing a disc in the CMS removes it from the site. Albums refresh once a day, or by hand.</li>
+        <li><strong>CMS cleanup.</strong> One entry per disc: name, pack, album link, chosen photos. Machine data lives in its own file, so the form only shows what a person edits.</li>
+        <li><strong>The picker.</strong> Each album appears as a contact sheet. Tick up to 14 frames in order and save; the site updates in 1–2 minutes. Reading Lightroom "likes" was tested too, but the picker won because it's explicit.</li>
+      </ol>
+      <figure class="shot"><img src="build-history/09-picker.jpg" alt="The photo picker showing an album as a contact sheet with numbered picks" loading="lazy" width="800" height="500"><figcaption>The picker: a contact sheet of the album. Numbers show pick order, and the tray along the bottom is the disc.</figcaption></figure>
+
+      <h2>Sharing</h2>
+      <p>Every disc has a shareable link that previews as the reel itself and opens the viewer on the right frame.</p>
+      <ul>
+        <li><strong>Reel links.</strong> A link can preload a disc and frame, and the address bar follows the viewer as you browse.</li>
+        <li><strong>Preview cards.</strong> Each reel gets a 1200×630 card showing the reel with its photos, not just the first photo.</li>
+        <li><strong>Share sheet.</strong> SHARE opens the system share sheet on Mac, iPhone and Windows, and falls back to copying the link.</li>
+      </ul>
+      <figure><img src="build-history/10-reelcard.jpg" alt="Reel preview card for Aloha Maui" loading="lazy" width="1200" height="630"><figcaption>The preview card generated for each reel, seen when a link is shared in Messages, Slack and similar apps.</figcaption></figure>
+
+      <h2>Phones and fullscreen</h2>
+      <p>Fullscreen and phone-sideways are about one thing: the photo as large as the screen allows, at its own shape, with the controls fading out of the way.</p>
+      <ul>
+        <li><strong>Native ratio.</strong> Photos keep their own shape. The photo sets the window size, with no resize animation and no side bars.</li>
+        <li><strong>Fullscreen.</strong> A quiet eyepiece bezel in black or white. Controls sit on the edges, and the lever runs down the right side.</li>
+        <li><strong>Theater mode.</strong> iPhones can't fullscreen a web page, so turning the phone sideways switches to a full-screen layout on its own.</li>
+        <li><strong>Touch.</strong> Swipe to change frames, tap the edges, or drag the lever.</li>
+        <li><strong>Slideshow.</strong> PLAY advances every 6 seconds; the lever pulls itself and the reel turns on each step. It starts paused.</li>
+      </ul>
+      <figure class="shot"><img src="build-history/07-fullview.jpg" alt="Full view with the photo filling the screen inside a thin bezel" loading="lazy" width="800" height="500"><figcaption>Full view, as in fullscreen or with a phone turned sideways.</figcaption></figure>
+      <figure class="shot narrow"><img src="build-history/08-phone.jpg" alt="The viewer on a phone in portrait" loading="lazy" width="546" height="742"><figcaption>Phone, portrait: INFO and sound on the viewer face, large touch buttons.</figcaption></figure>
+      <figure><img src="build-history/opt-fullscreen.jpg" alt="Fullscreen options: edge to edge, eyepiece bezel (picked), whole viewer larger" loading="lazy" width="1344" height="558"></figure>
+
+      <h2>Layout and information</h2>
+      <p>The page became two columns: a slim disc rack on the left and a large player taking about three-quarters of the width.</p>
+      <ul>
+        <li><strong>Header.</strong> One row with the site title, a red PHOTO PORTFOLIO mark and menu links, ready for a future landing page.</li>
+        <li><strong>Rack.</strong> Discs grouped by pack, with a quiet pack switcher. On smaller screens the rack moves below the viewer.</li>
+        <li><strong>Page load.</strong> The viewer appears first, then the reel, then the photo.</li>
+        <li><strong>Info.</strong> Only the caption is printed on the slide mount. INFO opens a reel sleeve with the disc's story and every frame.</li>
+      </ul>
+      <figure class="shot"><img src="build-history/05-sleeve.jpg" alt="The info sleeve listing every frame of the disc" loading="lazy" width="800" height="500"><figcaption>INFO opens the reel sleeve: the disc's story on the left, every frame on the right.</figcaption></figure>
+      <figure><img src="build-history/opt-layout.jpg" alt="Page layout options: three columns, two columns (picked), rack below (fallback)" loading="lazy" width="1344" height="558"></figure>
+
+      <h2>Delight pass</h2>
+      <p>Twelve small ideas were built in one go and judged live. Nine stayed and three were cut. The rule that emerged: delight beside the photo stays; anything that changes how the photo looks goes.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Idea</th><th>Result</th></tr></thead>
+        <tbody>
+          <tr><td>End-of-reel card</td><td>Kept, a favourite</td></tr>
+          <tr><td>Slideshow PLAY</td><td>Kept, with the lever pulling itself</td></tr>
+          <tr><td>Resume where you left off</td><td>Kept</td></tr>
+          <tr><td>Lever click sound</td><td>Kept, off by default</td></tr>
+          <tr><td>Catalog number and "Made in Detroit" on the reel</td><td>Kept</td></tr>
+          <tr><td>Controls fade in fullscreen</td><td>Kept</td></tr>
+          <tr><td>Frame strip in fullscreen</td><td>Kept</td></tr>
+          <tr><td>Keyboard shortcuts list</td><td>Kept</td></tr>
+          <tr><td>Haptic tick on Android</td><td>Kept</td></tr>
+          <tr><td>Backlit glow behind the photo</td><td>Cut: hid the cardboard mat</td></tr>
+          <tr><td>Paper sleeves in the rack</td><td>Cut: busy</td></tr>
+          <tr><td>Zoom in fullscreen</td><td>Cut: not needed</td></tr>
+        </tbody>
+      </table></div>
+      <figure class="shot"><img src="build-history/06-endcard.jpg" alt="The end-of-reel card offering replay or loading the next disc" loading="lazy" width="800" height="500"><figcaption>The end-of-reel card, shown after the last frame.</figcaption></figure>
+
+      <h2>Behind the scenes</h2>
+      <p>Everything authored lives in one private source; the public site is generated from it, so there's one place to edit and nothing to keep in sync by hand.</p>
+      <figure><img src="build-history/flow.jpg" alt="Publishing flow: CMS, picker and page edits go into the private repo; a publish workflow imports photos and builds the public site" loading="lazy" width="1344" height="670"></figure>
+
+      <h2>What's next</h2>
+      <ul>
+        <li>A landing page, with the viewer moving to a final address (old links will keep working).</li>
+        <li>Slideshow links, and auto-play when entering fullscreen.</li>
+        <li>Smaller images for phones, and captions pulled from album metadata.</li>
+        <li>Possibly a version others can attach to their own portfolios.</li>
+      </ul>
+
+      <a class="back" href="viewmaster-prototype-v2.html">← BACK TO THE VIEWER</a>
+    </article>
+  </div>
+
+  <footer class="footer"><span>© DANIEL TREGO</span><span>INSTAGRAM /TREGODAN</span><span>CONTACT // EJECT</span></footer>
+</main>
+</body>
+</html>

@@ -677,6 +677,8 @@
     .viewer-wrap.playing:not(:fullscreen):not(.theater) .fs-progress { animation:none; }
     .viewer-wrap.playing:not(:fullscreen):not(.theater) .fs-progress:after { animation:fsProg var(--slide-ms,6000ms) linear forwards; }
     @media (max-width:600px) { .viewer-wrap:not(:fullscreen):not(.theater) #playBtn { top:auto; bottom:var(--play-bottom,3.2cqw); left:4cqw; padding:6px 9px; font-size:9px; } .viewer-wrap:not(:fullscreen):not(.theater) .fs-progress { top:1.8cqw; } }
+    .footer-link { color:#756f65; text-decoration:none; border-bottom:1px solid #4d4a43; }
+    .footer-link:hover, .footer-link:focus-visible { color:var(--paper); border-color:var(--red); }
   </style>
 </head>
 <body data-boot="0">
@@ -688,7 +690,7 @@
       <div class="slider" id="slider"><span class="slider-track" aria-hidden="true"></span><button type="button" class="thumb" id="lever" aria-label="Advance to the next image. Tap, press Enter, or drag down."><span class="grip" aria-hidden="true"></span><svg class="chev" viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1.5 L6 6.5 L11 1.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div><div class="toast" id="toast" role="status" aria-live="polite"></div><p class="turn-hint" aria-hidden="true">⟲ Turn your phone for full view</p></div><section class="discs" aria-labelledby="disc-heading"><div class="section-label"><span id="disc-heading">LOAD A DISC</span></div><div class="disc-shelf" id="discShelf"><div class="disc-row" id="discs" role="list" aria-labelledby="disc-heading"></div></div><div class="pack-switch" id="packs" role="group" aria-label="Filter discs by pack"></div></section>
     </section>
     
-    <footer class="footer"><span>© DANIEL TREGO</span><span>INSTAGRAM /TREGODAN</span><span>CONTACT // EJECT</span></footer>
+    <footer class="footer"><span>© DANIEL TREGO</span><span>INSTAGRAM /TREGODAN</span><a class="footer-link" href="build-history.html">BUILD HISTORY</a><span>CONTACT // EJECT</span></footer>
   </main>
   <dialog class="sleeve" id="sleeve" aria-labelledby="sleeveTitle">
   <div class="sleeve-band" aria-hidden="true"></div>
