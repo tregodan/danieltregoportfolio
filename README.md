@@ -1,22 +1,17 @@
 # danieltregoportfolio (public): what danieltrego.com serves
 
 GitHub Pages serves this repo as it is, with the domain set in `CNAME`.
-It holds two kinds of files. Keep them apart.
+**Don't edit pages here.** Almost everything is copied or generated from the private repo
+[`tregodan/danieltrego`](https://github.com/tregodan/danieltrego) by its publish workflow, and gets overwritten on every publish.
 
-## Hand-made pages (edit these here)
-| File | Page |
+| Path | Comes from |
 |---|---|
-| `viewmaster-prototype-v2.html` | The View-Master photo viewer (current). Reel share links point here. |
-| `picker.html` | Photo picker: choose which Lightroom photos go on each disc. Saves to the private repo. |
-| `high-scores.html` | High Scores page |
-| `index.html` | Home page (placeholder until the landing page is built) |
-| `viewmaster-prototype.html` | First viewer prototype, kept for reference. Don't edit. |
-| `.github/workflows/retry-pages-deploy.yml` | Re-runs a Pages deploy once if GitHub's side fails |
+| `*.html` (viewer, picker, high scores, home) | `danieltrego/site/` (edit it there) |
+| `content/*.json` | Built from Pages CMS and Lightroom data |
+| `media/public/` | Images uploaded through Pages CMS |
+| `reel/<slug>/` | Generated share pages and `card.png` previews |
 
-## Generated files (don't edit; overwritten on every publish)
-Written by the private repo's publish workflow (`tregodan/danieltrego`):
-- `content/portfolio.json`, `content/high-scores.json`, `content/album-sheets.json`
-- `media/public/`: images uploaded through the CMS
-- `reel/<slug>/`: share pages, plus `card.png` preview images
-
-To change discs, photos or High Scores, use Pages CMS, not this repo.
+Only these belong to this repo itself:
+- `CNAME`: the custom domain
+- `.github/workflows/retry-pages-deploy.yml`: re-runs a Pages deploy once if GitHub's side fails
+- this README
