@@ -80,7 +80,7 @@
 <body class="locked">
   <div class="shell">
     <header class="topbar"><a class="site-title" href="/">DANIEL TREGO</a><div class="conn" id="conn"><span class="dot" aria-hidden="true"></span><span id="connText">Not connected</span><button type="button" id="connBtn">Connect GitHub</button></div></header>
-    <section class="lock" aria-labelledby="lockTitle"><h1 id="lockTitle">PRIVATE</h1><p>The photo picker is for the site owner. Connect with your GitHub key to continue.</p><button type="button" class="primary" id="lockBtn">Connect GitHub</button></section>
+    <section class="lock" aria-labelledby="lockTitle"><h1 id="lockTitle">PRIVATE</h1><p>The photo picker is for the site owner. Connect with your GitHub key to continue.</p><button type="button" class="primary" id="lockBtn">Connect GitHub</button><p class="err" id="lockMsg" role="alert" style="margin-top:14px"></p></section>
     <div class="page-mark"><b>Photo picker</b><span>CHOOSE THE FRAMES.</span></div>
     <p class="help" id="help">Add a Lightroom or iCloud shared album, click photos in the order you want them on the disc (up to 14), then save. The site updates about a minute later.</p>
 
@@ -197,8 +197,8 @@
     function setStatus(text, sticky) { $('#status').textContent = text; if (text && !sticky) setTimeout(() => { if ($('#status').textContent === text) $('#status').textContent = ''; }, 6000); }
     function renderConn() {
       document.body.classList.toggle('locked', !(token && cms));
-      $('#conn').classList.toggle('on', !!token);
-      $('#connText').textContent = token ? 'Connected to GitHub' : 'Not connected';
+      $('#conn').classList.toggle('on', !!(token && cms));
+      $('#connText').textContent = token ? (cms ? 'Connected to GitHub' : 'Key not working') : 'Not connected';
       $('#connBtn').textContent = token ? 'Disconnect' : 'Connect GitHub';
       $('#save').hidden = !token; $('#addBtn').hidden = !token;
       $('#help').textContent = token
@@ -352,7 +352,8 @@
 
     (async () => {
       renderConn();
-      if (token) { try { cms = (await readCms()).data; } catch (err) { setStatus(`${err.message} Click Disconnect, then connect with a new key.`, true); } }
+      if (token) { try { cms = (await readCms()).data; } catch (err) { $('#lockMsg').textContent = `${err.message} Click Disconnect, then connect with a new key.`; } }
+      renderConn();
       sheets = await loadSheets();
       renderList('');
     })();
