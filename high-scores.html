@@ -18,7 +18,7 @@
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
   <main class="shell" id="main-content">
-    <header class="brand"><h1>DANIEL<br>TREGO</h1><div class="tag">PORTFOLIO // INSERT COIN<b>WORK WORTH REMEMBERING.</b><nav class="nav" aria-label="Primary navigation"><a href="viewmaster-prototype.html">DISC VIEWER</a><a class="active" aria-current="page" href="high-scores.html">HIGH SCORES</a></nav></div></header>
+    <header class="brand"><h1>DANIEL<br>TREGO</h1><div class="tag">PORTFOLIO // INSERT COIN<b>WORK WORTH REMEMBERING.</b><nav class="nav" aria-label="Primary navigation"><a href="/portfolio/">DISC VIEWER</a><a class="active" aria-current="page" href="high-scores.html">HIGH SCORES</a></nav></div></header>
     <section class="machine" aria-label="Arcade high scores portfolio">
       <div class="screen"><div class="screen-head"><span>PLAYER 01</span><span id="categoryLabel" aria-live="polite">ALL WORK</span><span>● READY</span></div><h2 id="screenTitle" aria-live="polite">HIGH SCORES</h2><div class="hall">HALL OF FAME</div><div class="scores" id="scores" aria-label="Portfolio links"></div><div class="credits">CREDITS: 1</div></div>
       <div class="console"><div><button class="stick" id="joystick" aria-label="Move selection up or down"></button><span class="joystick-label">MOVE / SELECT</span></div><div class="buttons"><div class="button-group"><button class="arcade-button red" data-category="ALL" aria-label="Show all work"></button><span class="button-label">ALL</span></div><div class="button-group"><button class="arcade-button blue" data-category="PHOTO" aria-label="Show photography"></button><span class="button-label">PHOTO</span></div><div class="button-group"><button class="arcade-button yellow" data-category="DESIGN" aria-label="Show design"></button><span class="button-label">DESIGN</span></div><div class="button-group"><button class="arcade-button green" data-category="WEB" aria-label="Show web work"></button><span class="button-label">WEB</span></div><div class="button-group"><button class="arcade-button blue" data-category="TEACH" aria-label="Show teaching work"></button><span class="button-label">TEACH</span></div><div class="button-group"><button class="arcade-button yellow" data-category="RESEARCH" aria-label="Show research work"></button><span class="button-label">RESEARCH</span></div><div class="button-group"><button class="arcade-button red" data-category="OTHER" aria-label="Show other work"></button><span class="button-label">OTHER</span></div></div></div>
@@ -28,16 +28,16 @@
   <script>
     // EDIT THIS LIST to update the portfolio. A future CMS/Google Sheet can feed this same structure.
     const fallbackEntries=[
-      {name:'Night Studies',category:'PHOTO',year:'2025',description:'A photographic study of artificial light and late-hour movement.',href:'viewmaster-prototype.html'},
-      {name:'Soft Errors',category:'PHOTO',year:'2024',description:'Color, memory, and familiar places out of sequence.',href:'viewmaster-prototype.html'},
-      {name:'Field Notes',category:'PHOTO',year:'2023',description:'Edges, weather, and things that hold still.',href:'viewmaster-prototype.html'},
-      {name:'Accessibility Studio',category:'DESIGN',year:'2026',description:'Tools for making complex systems easier to see and use.',href:'viewmaster-prototype.html'},
+      {name:'Night Studies',category:'PHOTO',year:'2025',description:'A photographic study of artificial light and late-hour movement.',href:'/portfolio/'},
+      {name:'Soft Errors',category:'PHOTO',year:'2024',description:'Color, memory, and familiar places out of sequence.',href:'/portfolio/'},
+      {name:'Field Notes',category:'PHOTO',year:'2023',description:'Edges, weather, and things that hold still.',href:'/portfolio/'},
+      {name:'Accessibility Studio',category:'DESIGN',year:'2026',description:'Tools for making complex systems easier to see and use.',href:'/portfolio/'},
       {name:'Educational Media Design Specialist',category:'WEB',year:'MSU',description:'Official profile: video, audio production, web design, and digital storytelling.',href:'https://edtech.cal.msu.edu/the-team/daniel-trego/'},
       {name:'Author Archive // 17 Articles',category:'TEACH',year:'MSU',description:'Teaching resources and technical resources by Daniel Trego.',href:'https://edtech.cal.msu.edu/author/tregodan/'},
       {name:'Innovations in Teaching the Arts Online',category:'TEACH',year:'2020',description:'MSU C4I presentation and contributor profile.',href:'https://c4i.msu.edu/wp-content/uploads/sites/14/2022/05/2020.12.7-Newsletter.pdf'},
       {name:'MSU Author Archive // 17 Articles',category:'RESEARCH',year:'MSU',description:'Published teaching and technical articles by Daniel Trego.',href:'https://edtech.cal.msu.edu/author/tregodan/'},
       {name:'The Art of Archaeology',category:'RESEARCH',year:'2022',description:'MSU story about Daniel Trego’s documentation and exhibition work in Greece.',href:'https://eeb.msu.edu/news/exhibit-explored-the-art-of-archaeology.aspx'},
-      {name:'Selected Experiments',category:'OTHER',year:'2024',description:'Small studies, objects, and unfinished ideas.',href:'viewmaster-prototype.html'}
+      {name:'Selected Experiments',category:'OTHER',year:'2024',description:'Small studies, objects, and unfinished ideas.',href:'/portfolio/'}
     ];
     let scoreEntries=fallbackEntries,category='ALL',selected=0; const $=s=>document.querySelector(s); function visible(){return scoreEntries.filter(x=>category==='ALL'||x.category===category)}
     function scoreRow(x,i){const tag=x.url?'a':'button', link=x.url?' href="'+x.url+'" target="_blank" rel="noreferrer"':' type="button" title="Select '+x.name+'"'; return '<'+tag+' class="score '+(i===selected?'active':'')+'" data-index="'+i+'"'+link+'><span class="rank">'+String(i+1).padStart(2,'0')+'</span><span><strong>'+x.name+'</strong><br><span class="category">'+x.description+'</span></span><span class="year">'+x.year+'</span></'+tag+'>';}

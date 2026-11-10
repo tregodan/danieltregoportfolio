@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
   <title>Photo picker — Daniel Trego</title>
+  <meta name="robots" content="noindex, nofollow">
   <style>
     :root { --bg:#151515; --panel:#1d1d1d; --line:#2e2e2e; --paper:#ece7dc; --muted:#9a948a; --red:#d4473a; --teal:#3e6b79; --gold:#ffd45c; --ok:#8fc98f; }
     * { box-sizing:border-box; }
@@ -69,11 +70,17 @@
     .row { display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
     .row input { flex:1 1 260px; }
     .note { color:var(--muted); font-size:12px; margin-top:10px; }
+    .lock { display:none; max-width:460px; margin:12vh auto 0; text-align:center; }
+    .lock h1 { font-size:18px; letter-spacing:.12em; margin:0 0 10px; }
+    .lock p { color:var(--muted); font-size:13px; margin:0 0 18px; }
+    body.locked .lock { display:block; }
+    body.locked .shell > :not(.topbar):not(.lock), body.locked .tray { display:none !important; }
   </style>
 </head>
-<body>
+<body class="locked">
   <div class="shell">
     <header class="topbar"><a class="site-title" href="/">DANIEL TREGO</a><div class="conn" id="conn"><span class="dot" aria-hidden="true"></span><span id="connText">Not connected</span><button type="button" id="connBtn">Connect GitHub</button></div></header>
+    <section class="lock" aria-labelledby="lockTitle"><h1 id="lockTitle">PRIVATE</h1><p>The photo picker is for the site owner. Connect with your GitHub key to continue.</p><button type="button" class="primary" id="lockBtn">Connect GitHub</button></section>
     <div class="page-mark"><b>Photo picker</b><span>CHOOSE THE FRAMES.</span></div>
     <p class="help" id="help">Add a Lightroom or iCloud shared album, click photos in the order you want them on the disc (up to 14), then save. The site updates about a minute later.</p>
 
@@ -137,7 +144,7 @@
 
   <script>
     const MAX = 14, OWNER = 'tregodan', REPO = 'danieltrego', FILE = 'content/portfolio.json';
-    const SHEETS_API = 'https://api.github.com/repos/tregodan/danieltregoportfolio/contents/content/album-sheets.json';
+    const SHEETS_API = 'https://api.github.com/repos/tregodan/danieltrego/contents/content/album-sheets.json?ref=main'; // private
     const $ = (s) => document.querySelector(s);
     const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     const parsePicks = (t) => String(t || '').toLowerCase().match(/[0-9a-f]{6,32}/g) || [];
@@ -168,8 +175,8 @@
     }
     async function loadSheets() {
       try {
-        if (token) { const r = await gh(SHEETS_API, { headers: { Accept: 'application/vnd.github.raw+json' } }); if (r.ok) return (await r.json()).albums || []; }
-        const r = await fetch(`content/album-sheets.json?t=${Date.now()}`, { cache: 'no-store' });
+        if (!token) return [];
+        const r = await gh(SHEETS_API, { headers: { Accept: 'application/vnd.github.raw+json' } });
         return r.ok ? (await r.json()).albums || [] : [];
       } catch { return []; }
     }
@@ -189,6 +196,7 @@
     // ---------- UI ----------
     function setStatus(text, sticky) { $('#status').textContent = text; if (text && !sticky) setTimeout(() => { if ($('#status').textContent === text) $('#status').textContent = ''; }, 6000); }
     function renderConn() {
+      document.body.classList.toggle('locked', !(token && cms));
       $('#conn').classList.toggle('on', !!token);
       $('#connText').textContent = token ? 'Connected to GitHub' : 'Not connected';
       $('#connBtn').textContent = token ? 'Disconnect' : 'Connect GitHub';
@@ -325,9 +333,10 @@
     });
 
     $('#connBtn').addEventListener('click', () => {
-      if (token) { token = ''; try { localStorage.removeItem('dt-picker-token'); } catch {} cms = null; renderConn(); renderList(current?.url); setStatus('Disconnected. The key was removed from this browser.'); return; }
+      if (token) { token = ''; try { localStorage.removeItem('dt-picker-token'); } catch {} cms = null; sheets = []; renderConn(); renderList(''); setStatus('Disconnected. The key was removed from this browser.'); return; }
       $('#tokenErr').textContent = ''; $('#tokenInput').value = ''; $('#connDialog').showModal();
     });
+    $('#lockBtn').addEventListener('click', () => { $('#tokenErr').textContent = ''; $('#tokenInput').value = ''; $('#connDialog').showModal(); });
     $('#tokenCancel').addEventListener('click', () => $('#connDialog').close());
     $('#connForm').addEventListener('submit', async (e) => {
       e.preventDefault();
