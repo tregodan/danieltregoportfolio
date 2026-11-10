@@ -439,6 +439,102 @@
         }
       ],
       "slug": "game-over"
+    },
+    {
+      "id": "DISC_06",
+      "title": "Lake Powell",
+      "pack": "",
+      "orientation": "landscape",
+      "location": "",
+      "date": "2025",
+      "description": "",
+      "images": [
+        {
+          "src": "https://lightroom.adobe.com/v2c/spaces/0ca064a92e9e4beeb69997d80e91906a/assets/59da4e9e3cef4bada0544537d7486847/revisions/dbf79ffc37e84f1c8096b625dd02d458/renditions/14a36405e4e107effe1fda8701e79e18",
+          "w": 8256,
+          "h": 6192,
+          "date": "2025"
+        },
+        {
+          "src": "https://lightroom.adobe.com/v2c/spaces/0ca064a92e9e4beeb69997d80e91906a/assets/64f31623ec7144098fd6908d07b5540b/revisions/151f1ea1fd02477297a2030ff3538703/renditions/3faf335bf64633d7900cef4c5587ec5d",
+          "w": 6192,
+          "h": 8256,
+          "date": "2025"
+        },
+        {
+          "src": "https://lightroom.adobe.com/v2c/spaces/0ca064a92e9e4beeb69997d80e91906a/assets/8d744e38001b4533b2468551d242d062/revisions/769ace1195e44f59a2e1e532d7a57d72/renditions/2ff3fe9a8757fadd21427217abb02aa2",
+          "w": 6192,
+          "h": 8256,
+          "date": "2025"
+        },
+        {
+          "src": "https://lightroom.adobe.com/v2c/spaces/0ca064a92e9e4beeb69997d80e91906a/assets/012bf5e8d9c64e49905138673e1d0874/revisions/5e733552e48740959cf9ec143ecb7a6a/renditions/db1d4f104845ec697ffc3b72716f8790",
+          "w": 8256,
+          "h": 6192,
+          "date": "2025"
+        },
+        {
+          "src": "https://lightroom.adobe.com/v2c/spaces/0ca064a92e9e4beeb69997d80e91906a/assets/e4d40157499745e18288dffc5515c72a/revisions/aea20a442b4147d0b3447ba1e4dd3e42/renditions/b4335df1739212ba67c99bfae2525b2e",
+          "w": 8256,
+          "h": 6192,
+          "date": "2025"
+        },
+        {
+          "src": "https://lightroom.adobe.com/v2c/spaces/0ca064a92e9e4beeb69997d80e91906a/assets/6d48962951ed46cf911bcd8ecab6343e/revisions/fdf1d2d213a1454f845201f785fa23e9/renditions/cf0740cf6e9c692b44902c56b5a67e50",
+          "w": 7728,
+          "h": 5152,
+          "date": "2025"
+        },
+        {
+          "src": "https://lightroom.adobe.com/v2c/spaces/0ca064a92e9e4beeb69997d80e91906a/assets/5e782746955a4303b242b61703e1ec77/revisions/b0c91a8eb4f54245b91e02e51cf172b3/renditions/f81eb30095fbe34a4463f4b65f2350d7",
+          "w": 7728,
+          "h": 5152,
+          "date": "2025"
+        },
+        {
+          "src": "https://lightroom.adobe.com/v2c/spaces/0ca064a92e9e4beeb69997d80e91906a/assets/941cef6be9674a1a80f42d850cbab916/revisions/9cbf00031c1b4052a8dd8bbd7c83afaa/renditions/7c2084d99fdd3d53d3b72223f83050e8",
+          "w": 7728,
+          "h": 5152,
+          "date": "2025"
+        },
+        {
+          "src": "https://lightroom.adobe.com/v2c/spaces/0ca064a92e9e4beeb69997d80e91906a/assets/a8a12d980b2141878ddc04898fe73971/revisions/c3448de4c1364fe080f6a0a6d21966f8/renditions/b04ba3c7845146b4619f953b97bb939c",
+          "w": 7728,
+          "h": 5152,
+          "date": "2025"
+        },
+        {
+          "src": "https://lightroom.adobe.com/v2c/spaces/0ca064a92e9e4beeb69997d80e91906a/assets/1ce11667eefc451088237d986aa36b3e/revisions/ecd5a68bffa5440c9a8479c5a9465802/renditions/e71a9902153b1fcd6d09801eff04d317",
+          "w": 4000,
+          "h": 3000,
+          "date": "2025"
+        },
+        {
+          "src": "https://lightroom.adobe.com/v2c/spaces/0ca064a92e9e4beeb69997d80e91906a/assets/a64f62cc2e6049aeb771f999302c57b5/revisions/11caa6138e5f445abf3d4ee61c76d42b/renditions/a70f1ec48f8e26a0d8a9bb34a3071239",
+          "w": 4000,
+          "h": 3000,
+          "date": "2025"
+        },
+        {
+          "src": "https://lightroom.adobe.com/v2c/spaces/0ca064a92e9e4beeb69997d80e91906a/assets/b686adb342e543dba8ddd3669a88b7c2/revisions/fb66c4efacaa4d68a650c9308d371b17/renditions/9b519bae0fefea9b52e2e204b928bc08",
+          "w": 4000,
+          "h": 3000,
+          "date": "2025"
+        },
+        {
+          "src": "https://lightroom.adobe.com/v2c/spaces/0ca064a92e9e4beeb69997d80e91906a/assets/4af3c496df294b8c9c6ddf639a163c57/revisions/4a7360256bcb47ef983ee9042de4eda2/renditions/75216e2458a114deefabbc8cffcbc864",
+          "w": 4000,
+          "h": 3000,
+          "date": "2025"
+        },
+        {
+          "src": "https://lightroom.adobe.com/v2c/spaces/0ca064a92e9e4beeb69997d80e91906a/assets/795a39d6c8794a33b70180b64a0a5650/revisions/641d2677fd384c6297b132dd37432644/renditions/d5822d1dd558857584da733930e98472",
+          "w": 4000,
+          "h": 3000,
+          "date": "2025"
+        }
+      ],
+      "slug": "lake-powell"
     }
   ]
 }
