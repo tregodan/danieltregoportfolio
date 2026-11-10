@@ -92,8 +92,31 @@
       </table></div>
       <p>About 35 viewer iterations shipped. Almost every one came from a review of the live page, often after a round of mockups.</p>
 
+      <h2>Version 1: built in ChatGPT</h2>
+      <p>Before this build, the first version was worked out in ChatGPT. It set the brief: a photo portfolio that feels like handling an old View-Master. Pick a reel, see a short run of photos, advance one frame at a time, and get just enough information to understand the work. It had to feel tactile and low-fi and still work on phones.</p>
+      <figure><img src="build-history/v1-viewer-mockup.jpg" alt="Version 1 mockup: a red View-Master shell with a photo window, orange round lever, previous and next image buttons, and a row of discs below" loading="lazy" width="1344" height="762"><figcaption>v1 concept: the shell, a round orange lever, image buttons on the face and a disc row below.</figcaption></figure>
+      <p>The browsing model was a physical sequence: choose a pack, insert a disc, look at the frame, pull the lever, read what matters.</p>
+      <figure><img src="build-history/v1-interaction-model.jpg" alt="Interaction model: pack, disc, frame, lever, context" loading="lazy" width="1344" height="404"></figure>
+      <h3>What v1 decided</h3>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Choice</th><th>Why</th><th>What became of it</th></tr></thead>
+        <tbody>
+          <tr><td>The viewer is the interface, not a grid</td><td>A grid is efficient but generic; the View-Master makes pacing part of the work</td><td>Kept</td></tr>
+          <tr><td>A lever instead of autoplay</td><td>The project is about looking slowly, so each frame should be a deliberate pull</td><td>Kept, as a thumb slider; slideshow came later and pulls the lever itself</td></tr>
+          <tr><td>Packs above discs</td><td>Long projects need several reels; a disc names its pack, so nothing is listed twice</td><td>Kept</td></tr>
+          <tr><td>Fixed 3:2 and 2:3 shells, photos cropped to fill</td><td>A shell that changed size with every photo felt broken</td><td>Replaced: photos keep their own shape, with no resize animation</td></tr>
+          <tr><td>Optional metadata, empty labels hidden</td><td>No empty scaffolding around the photos</td><td>Kept; only the caption sits on the mount, the rest is in INFO</td></tr>
+          <tr><td>High Scores as a second page</td><td>Writing, teaching, research and web work don't fit inside photo reels</td><td>Kept</td></tr>
+          <tr><td>Private source repo, generated public site</td><td>CMS settings and raw media shouldn't be public</td><td>Kept, and extended with the picker and daily album refresh</td></tr>
+          <tr><td>Lightroom albums would need an Adobe login (OAuth)</td><td>A public site can't hold Adobe secrets</td><td>Avoided: public share links turned out to be readable with no login</td></tr>
+        </tbody>
+      </table></div>
+      <figure><img src="build-history/v1-high-scores-mockup.jpg" alt="High Scores mockup: an arcade cabinet screen listing work by category, with four coloured buttons" loading="lazy" width="1344" height="762"><figcaption>High Scores: an arcade-screen index for the work that isn't photographs.</figcaption></figure>
+      <figure><img src="build-history/v1-publishing-architecture.jpg" alt="Publishing architecture: private source with Pages CMS, content, media and scripts feeds a build step that publishes only the renderable site to public GitHub Pages" loading="lazy" width="1344" height="471"><figcaption>The publishing split v1 settled on. It still holds.</figcaption></figure>
+      <p>v1 also listed what it hadn't settled: cropping versus showing the whole photo, how to sync Lightroom, square reels, a random mode across packs, and where captions should come from. The build below answered two: photos keep their own shape, and albums sync from share links. Captions from album metadata, square reels and a random mode are still open.</p>
+
       <h2>Starting point</h2>
-      <p>The project began as a first prototype with a CMS already in place. That page stays untouched as the reference, and every change went into a new page so each step could be compared against where it started.</p>
+      <p>This build picked up from that first prototype, with the CMS already in place. That page stays untouched as the reference, and every change went into a new page so each step could be compared against where it started.</p>
       <p>What was missing: the disc didn't read as loaded into the viewer, photos were forced into one shape, phones were an afterthought, and adding photos was slow.</p>
       <figure class="shot"><img src="build-history/01-v1.jpg" alt="The first prototype: a red View-Master with the photo inside and disc details beside it" loading="lazy" width="800" height="500"><figcaption>v1: the starting prototype. The viewer and disc details sit side by side, and the disc shelf is below the fold.</figcaption></figure>
 
