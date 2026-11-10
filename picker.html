@@ -11,7 +11,7 @@
     :root { --bg:#151515; --panel:#1d1d1d; --line:#2e2e2e; --paper:#ece7dc; --muted:#9a948a; --red:#d4473a; --teal:#3e6b79; --gold:#ffd45c; --ok:#8fc98f; }
     * { box-sizing:border-box; }
     body { margin:0; background:var(--bg); color:var(--paper); font:14px/1.5 ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace; }
-    .shell { max-width:1280px; margin:0 auto; padding:18px 24px 130px; }
+    .shell { max-width:1280px; margin:0 auto; padding:18px 24px 190px; }
     .topbar { display:flex; justify-content:space-between; align-items:center; gap:12px; padding-bottom:14px; border-bottom:1px solid var(--line); }
     .site-title { color:var(--paper); text-decoration:none; font:28px/1 Impact,Haettenschweiler,"Arial Narrow Bold",sans-serif; }
     .page-mark { display:flex; gap:12px; align-items:baseline; padding:16px 0 4px; font-size:11px; text-transform:uppercase; }
@@ -28,7 +28,7 @@
     button.primary { background:var(--teal); border-color:var(--teal); color:#fff; }
     button.danger { color:#ff9b8f; }
     button.danger.armed { background:#7a2a22; border-color:#a8463f; color:#fff; }
-    button:focus-visible,select:focus-visible,input:focus-visible,.tile:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
+    button:focus-visible,select:focus-visible,input:focus-visible,.tile:focus-visible,.chip:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
     .meta { color:var(--muted); font-size:12px; margin-left:auto; }
     .conn { font-size:12px; color:var(--muted); display:flex; gap:8px; align-items:center; }
     .conn .dot { width:8px; height:8px; border-radius:50%; background:#555; }
@@ -43,21 +43,44 @@
     .err:empty { display:none; }
     .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; }
     .tile { position:relative; padding:0; border:2px solid transparent; border-radius:8px; background:#222; overflow:hidden; aspect-ratio:1; cursor:pointer; }
-    .tile img { width:100%; height:100%; object-fit:contain; display:block; background:#111; transition:opacity .15s; }
+    .tile > img { width:100%; height:100%; object-fit:contain; display:block; background:#111; transition:opacity .15s; }
     .tile .n { position:absolute; left:6px; top:6px; font-size:10px; background:rgba(0,0,0,.65); padding:1px 5px; border-radius:4px; color:#cfc9bd; }
     .tile .likes { position:absolute; right:6px; top:6px; font-size:11px; background:rgba(0,0,0,.65); padding:1px 6px; border-radius:4px; color:#ff8a7a; }
     .tile .order { position:absolute; right:8px; bottom:8px; width:30px; height:30px; border-radius:50%; display:none; place-items:center; background:var(--red); color:#fff; font-weight:700; font-size:13px; box-shadow:0 0 0 2px #151515; }
     .tile[aria-pressed="true"] { border-color:var(--red); }
     .tile[aria-pressed="true"] .order { display:grid; }
     .grid.full .tile[aria-pressed="false"] img { opacity:.45; }
+    .seg { display:inline-flex; border:1px solid var(--line); border-radius:6px; overflow:hidden; }
+    .seg button { border:0; border-radius:0; background:var(--panel); }
+    .seg button + button { border-left:1px solid var(--line); }
+    .seg button[aria-pressed="true"] { background:#2a1d1b; color:#fff; box-shadow:inset 0 -2px 0 var(--red); }
+    /* Large and Viewer size: each photo in the viewer's die-cut mat (sizes measured from /portfolio/ at 1440x900) */
+    .grid.large { grid-template-columns:repeat(auto-fill,minmax(min(100%,400px),1fr)); gap:14px; }
+    .grid.viewer { grid-template-columns:min(100%, calc((100svh - 104px) / .81 * .92)); justify-content:center; gap:22px; }
+    .tile.matted { aspect-ratio:auto; overflow:visible; background:none; border-width:3px; border-radius:10px; container-type:inline-size; }
+    .mat { position:relative; display:block; width:100%; aspect-ratio:1.74; container-type:inline-size; background:radial-gradient(circle at 30% 20%, rgba(255,255,255,.35), transparent 60%), #e6dfcf; border-radius:2.65cqw 2.65cqw 4cqw 4cqw; box-shadow:inset 0 0 0 2px #120605; }
+    .mat img { position:absolute; inset:3.48cqw 3.48cqw 6.74cqw; margin:auto; width:auto; height:auto; max-width:calc(100% - 6.96cqw); max-height:calc(100% - 10.22cqw); object-fit:contain; display:block; background:transparent; filter:saturate(.72) contrast(1.05); box-shadow:0 0 0 1px rgba(40,34,26,.55), 0 0 0 .6cqw #f6f2e9, 0 0 0 calc(.6cqw + 1px) rgba(40,34,26,.18); transition:opacity .15s; }
+    .mat .cap { position:absolute; left:6cqw; right:6cqw; bottom:2.17cqw; text-align:center; font:700 max(10px,1.85cqw)/1.4 "Arial Narrow","Franklin Gothic Medium","Helvetica Neue Condensed",Arial,sans-serif; letter-spacing:.05em; text-transform:uppercase; color:#3a352d; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .tile.matted .n, .tile.matted .likes { top:8px; }
+    .tile.matted .n { left:8px; } .tile.matted .likes { right:8px; }
+    .tile.matted .order { right:10px; bottom:10px; }
     .empty { color:var(--muted); padding:40px 0; }
     .loading { color:var(--muted); padding:40px 0; display:flex; gap:12px; align-items:center; }
     .spin { width:16px; height:16px; border:2px solid #444; border-top-color:var(--gold); border-radius:50%; animation:spin 1s linear infinite; }
     @keyframes spin { to { transform:rotate(360deg); } }
     .tray { position:fixed; left:0; right:0; bottom:0; background:rgba(21,21,21,.97); border-top:1px solid var(--line); padding:12px 24px; }
     .tray-in { max-width:1280px; margin:0 auto; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
-    .strip { display:flex; gap:6px; flex:1; min-width:160px; overflow-x:auto; padding:2px; }
-    .strip img { height:44px; width:44px; object-fit:cover; border-radius:4px; border:1px solid var(--line); flex:none; }
+    .strip { display:flex; gap:8px; flex:1; min-width:160px; overflow-x:auto; padding:4px 2px 6px; scrollbar-width:thin; }
+    .chip { container-type:inline-size; flex:none; width:104px; padding:0; border:2px solid transparent; border-radius:7px; background:none; position:relative; touch-action:pan-y; user-select:none; -webkit-user-select:none; }
+    .chip .mat img { pointer-events:none; -webkit-user-drag:none; }
+    .chip .pos { position:absolute; left:-4px; top:-6px; min-width:18px; height:18px; padding:0 4px; border-radius:9px; background:var(--red); color:#fff; font-size:10px; line-height:18px; text-align:center; box-shadow:0 0 0 2px #151515; }
+    .chip[aria-pressed="true"] { border-color:var(--gold); }
+    .chip.dragging { border-color:var(--gold); opacity:.85; cursor:grabbing; }
+    .strip.dragging .chip:not(.dragging) { cursor:grabbing; }
+    .chip:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
+    .movers { display:flex; gap:6px; }
+    .movers button { padding:8px 10px; }
+    .sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
     .count { font-size:12px; color:var(--muted); white-space:nowrap; }
     .status { font-size:12px; color:var(--gold); width:100%; }
     .status:empty { display:none; }
@@ -82,7 +105,7 @@
     <header class="topbar"><a class="site-title" href="/">DANIEL TREGO</a><div class="conn" id="conn"><span class="dot" aria-hidden="true"></span><span id="connText">Not connected</span><button type="button" id="connBtn">Connect GitHub</button></div></header>
     <section class="lock" aria-labelledby="lockTitle"><h1 id="lockTitle">PRIVATE</h1><p>The photo picker is for the site owner. Connect with your GitHub key to continue.</p><button type="button" class="primary" id="lockBtn">Connect GitHub</button><p class="err" id="lockMsg" role="alert" style="margin-top:14px"></p></section>
     <div class="page-mark"><b>Photo picker</b><span>CHOOSE THE FRAMES.</span></div>
-    <p class="help" id="help">Add a Lightroom or iCloud shared album, click photos in the order you want them on the disc (up to 14), then save. The site updates about a minute later.</p>
+    <p class="help" id="help">Add a Lightroom or iCloud shared album, click photos in the order you want them on the disc (up to 14), drag them into order in the tray, then save. The site updates about a minute later.</p>
 
     <div class="bar">
       <label for="album" class="count">Disc</label>
@@ -91,6 +114,7 @@
       <button type="button" id="first">First 14</button>
       <button type="button" id="liked">Select liked</button>
       <button type="button" id="clear">Clear</button>
+      <span class="seg" role="group" aria-label="Photo size"><button type="button" data-size="small" aria-pressed="true">Small</button><button type="button" data-size="large" aria-pressed="false">Large</button><button type="button" data-size="viewer" aria-pressed="false">Viewer size</button></span>
       <span class="meta" id="meta"></span>
     </div>
 
@@ -109,6 +133,7 @@
       <label class="field">Pack<select id="editPack"></select></label>
       <label class="field" id="editPackNameWrap" hidden>New pack name<input id="editPackName" placeholder="Pack name"></label>
       <button type="submit">Save details</button>
+      <button type="button" id="dupBtn">+ Another disc from this album</button>
       <button type="button" class="danger" id="deleteBtn">Delete disc</button>
       <p class="err" id="editErr" role="alert"></p>
     </form>
@@ -119,10 +144,12 @@
   <div class="tray">
     <div class="tray-in">
       <span class="count" id="count" aria-live="polite">0 / 14 selected</span>
-      <div class="strip" id="strip" aria-hidden="true"></div>
+      <div class="strip" id="strip" role="group" aria-label="Photos on this disc, in order. Drag to reorder, or select one and use the arrow keys."></div>
+      <span class="movers"><button type="button" id="moveL" aria-label="Move selected photo earlier">◀</button><button type="button" id="moveR" aria-label="Move selected photo later">▶</button></span>
       <button type="button" class="primary" id="save">Save to disc</button>
       <button type="button" id="copy">Copy selection</button>
       <p class="status" id="status" role="status"></p>
+      <p class="sr-only" id="announce" aria-live="assertive"></p>
     </div>
   </div>
 
@@ -182,9 +209,10 @@
     }
 
     // ---------- model ----------
+    // Discs are identified by their place in content/portfolio.json, so one album can feed several discs.
     function entries() {
-      if (cms) return (cms.discs || []).filter((d) => d && d.album).map((d) => ({ url: norm(d.album), title: d.title || '', pack: d.pack || '', photos: d.photos || '', sheet: sheets.find((s) => norm(s.url) === norm(d.album)) || null }));
-      return sheets.map((s) => ({ url: norm(s.url), title: s.title || s.name, pack: '', photos: (s.picks || []).join(', '), sheet: s }));
+      if (!cms) return [];
+      return (cms.discs || []).map((d, i) => d && d.album ? { i, url: norm(d.album), title: d.title || '', pack: d.pack || '', photos: d.photos || '', frames: d.frames || [], uploads: (d.uploads || []).length, sheet: sheets.find((s) => norm(s.url) === norm(d.album)) || null } : null).filter(Boolean);
     }
     function packNames() { return [...new Set([...(cms?.packs || []).map((p) => p.name).filter(Boolean)])]; }
     function fillPackSelect(sel, value) {
@@ -192,49 +220,80 @@
       sel.innerHTML = `<option value="">— none —</option>${names.map((n) => `<option ${n === value ? 'selected' : ''}>${esc(n)}</option>`).join('')}<option value="__new">+ New pack…</option>`;
       if (value && !names.includes(value)) sel.insertAdjacentHTML('afterbegin', `<option selected>${esc(value)}</option>`);
     }
+    const label = (e) => e.title || e.sheet?.name || e.url;
+    // The disc in freshly read data, checked against what the picker showed.
+    function discIn(d, e) {
+      const x = (d.discs || [])[e.i];
+      if (!x || norm(x.album) !== e.url) throw new Error('The disc list changed in Pages CMS. Reload the picker and try again.');
+      return x;
+    }
+    // Frame details (captions etc.) are stored by position after any uploaded photos; keep them with their photo when reordering.
+    function reorderFrames(x, before, after) {
+      const offset = (x.uploads || []).length, old = x.frames || [];
+      if (old.length <= offset) return;
+      const filled = (f) => f && Object.values(f).some((v) => String(v ?? '').trim());
+      const moved = after.map((id) => { const j = before.indexOf(id); return j >= 0 && filled(old[offset + j]) ? old[offset + j] : {}; });
+      const out = [...old.slice(0, offset), ...moved];
+      while (out.length > offset && !filled(out[out.length - 1])) out.pop();
+      if (out.length) x.frames = out; else delete x.frames;
+    }
 
     // ---------- UI ----------
+    let size = 'small'; try { size = localStorage.getItem('dt-picker-size') || 'small'; } catch {}
+    let savedOrder = [], selectedChip = null;
     function setStatus(text, sticky) { $('#status').textContent = text; if (text && !sticky) setTimeout(() => { if ($('#status').textContent === text) $('#status').textContent = ''; }, 6000); }
+    function announce(text) { $('#announce').textContent = ''; requestAnimationFrame(() => ($('#announce').textContent = text)); }
     function renderConn() {
       document.body.classList.toggle('locked', !(token && cms));
       $('#conn').classList.toggle('on', !!(token && cms));
       $('#connText').textContent = token ? (cms ? 'Connected to GitHub' : 'Key not working') : 'Not connected';
       $('#connBtn').textContent = token ? 'Disconnect' : 'Connect GitHub';
       $('#save').hidden = !token; $('#addBtn').hidden = !token;
-      $('#help').textContent = token
-        ? 'Add a Lightroom or iCloud shared album, click photos in the order you want them on the disc (up to 14), then Save to disc. The site updates about a minute later.'
-        : 'Click photos in the order you want them on the disc (up to 14), then Copy selection and paste it into Photos to use in Pages CMS. Connect GitHub to add albums and save from here.';
     }
-    function renderList(keepUrl) {
+    function renderList(keepIndex) {
       const list = entries();
-      $('#album').innerHTML = list.length ? list.map((e, i) => `<option value="${i}">${esc(e.title || e.sheet?.name || e.url)}${e.sheet ? '' : ' (loading…)'}</option>`).join('') : '<option>No discs yet</option>';
-      let idx = Math.max(0, list.findIndex((e) => e.url === keepUrl));
-      $('#album').value = String(idx);
-      choose(list[idx] || null);
+      const counts = {};
+      $('#album').innerHTML = list.length ? list.map((e) => { const l = label(e); counts[l] = (counts[l] || 0) + 1; return `<option value="${e.i}">${esc(l)}${counts[l] > 1 ? ` (${counts[l]})` : ''}${e.sheet ? '' : ' (loading…)'}</option>`; }).join('') : '<option>No discs yet</option>';
+      const entry = list.find((e) => e.i === keepIndex) || list[0] || null;
+      if (entry) $('#album').value = String(entry.i);
+      choose(entry);
     }
     function choose(entry) {
-      current = entry; clearTimeout(pollTimer);
+      current = entry; clearTimeout(pollTimer); selectedChip = null;
       $('#discPanel').hidden = !(token && entry);
       if (token && entry) { $('#editTitle').value = entry.title; fillPackSelect($('#editPack'), entry.pack); $('#editPackNameWrap').hidden = true; $('#editErr').textContent = ''; resetDelete(); }
       if (entry?.sheet) {
         const ids = entry.sheet.photos.map((p) => p.id);
-        const start = parsePicks(entry.photos).length ? parsePicks(entry.photos) : entry.sheet.onDisc || [];
+        const picks = parsePicks(entry.photos);
+        // no picks: the site uses the first 14 photos in the album
+        const start = picks.length ? picks : ids.slice(0, MAX);
         picked = start.map((id) => ids.find((x) => x.startsWith(id.slice(0, 8)))).filter(Boolean).slice(0, MAX);
       } else picked = [];
+      savedOrder = picked.slice();
       renderGrid();
       if (entry && !entry.sheet) poll(entry.url, 0);
     }
+    const photoById = (id) => current?.sheet?.photos.find((x) => x.id === id);
+    function captionFor(id) {
+      const j = savedOrder.indexOf(id);
+      return j >= 0 ? current.frames[current.uploads + j]?.caption || '' : '';
+    }
     function renderGrid() {
       const grid = $('#grid'), e = current;
-      ['#first', '#liked', '#clear', '#save', '#copy'].forEach((s) => ($(s).disabled = !e?.sheet));
+      document.querySelectorAll('.seg button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.size === size)));
+      grid.className = `grid ${size === 'small' ? '' : size}`;
+      ['#first', '#liked', '#clear', '#save', '#copy', '#dupBtn'].forEach((s) => ($(s).disabled = !e?.sheet));
       if (!e) { grid.innerHTML = `<p class="empty">${token ? 'No discs yet — click + Add album to start.' : 'No albums yet.'}</p>`; $('#meta').textContent = ''; sync(); return; }
       if (!e.sheet) { grid.innerHTML = '<p class="loading"><span class="spin" aria-hidden="true"></span>Loading photos from the album — usually about a minute. You can leave this open.</p>'; $('#meta').textContent = ''; sync(); return; }
       grid.innerHTML = '';
+      const matted = size !== 'small';
       e.sheet.photos.forEach((p, i) => {
         const b = document.createElement('button');
-        b.type = 'button'; b.className = 'tile'; b.dataset.id = p.id;
+        b.type = 'button'; b.className = matted ? 'tile matted' : 'tile'; b.dataset.id = p.id;
         b.setAttribute('aria-label', `Photo ${i + 1}${p.likes ? `, ${p.likes} like${p.likes > 1 ? 's' : ''}` : ''}`);
-        b.innerHTML = `<img loading="lazy" alt="" src="${esc(p.thumb)}"><span class="n">${i + 1}</span>${p.likes ? `<span class="likes">♥ ${p.likes}</span>` : ''}<span class="order"></span>`;
+        const src = size === 'viewer' ? p.big || p.thumb : p.thumb;
+        const img = `<img loading="lazy" alt="" src="${esc(src)}">`;
+        b.innerHTML = `${matted ? `<span class="mat">${img}<span class="cap"></span></span>` : img}<span class="n">${i + 1}</span>${p.likes ? `<span class="likes">♥ ${p.likes}</span>` : ''}<span class="order"></span>`;
         b.addEventListener('click', () => toggle(p.id));
         grid.appendChild(b);
       });
@@ -244,11 +303,31 @@
       sync();
     }
     function sync() {
-      document.querySelectorAll('.tile').forEach((t) => { const i = picked.indexOf(t.dataset.id); t.setAttribute('aria-pressed', String(i >= 0)); t.querySelector('.order').textContent = i >= 0 ? i + 1 : ''; });
+      document.querySelectorAll('.tile').forEach((t) => {
+        const i = picked.indexOf(t.dataset.id);
+        t.setAttribute('aria-pressed', String(i >= 0)); t.querySelector('.order').textContent = i >= 0 ? i + 1 : '';
+        const cap = t.querySelector('.cap'); if (cap) cap.textContent = i >= 0 ? captionFor(t.dataset.id) : '';
+      });
       $('#grid').classList.toggle('full', picked.length >= MAX);
       $('#count').textContent = `${picked.length} / ${MAX} selected`;
-      const photos = current?.sheet?.photos || [];
-      $('#strip').innerHTML = picked.map((id) => { const p = photos.find((x) => x.id === id); return p ? `<img src="${esc(p.thumb)}" alt="">` : ''; }).join('');
+      if (!picked.includes(selectedChip)) selectedChip = null;
+      renderStrip();
+    }
+    function renderStrip(focusId) {
+      $('#strip').innerHTML = picked.map((id, k) => {
+        const p = photoById(id); if (!p) return '';
+        return `<button type="button" class="chip" data-id="${esc(id)}" aria-pressed="${id === selectedChip}" aria-label="Position ${k + 1} of ${picked.length}${captionFor(id) ? `, ${esc(captionFor(id))}` : ''}"><span class="mat"><img src="${esc(p.thumb)}" alt=""></span><span class="pos" aria-hidden="true">${k + 1}</span></button>`;
+      }).join('');
+      $('#moveL').disabled = !selectedChip || picked.indexOf(selectedChip) <= 0;
+      $('#moveR').disabled = !selectedChip || picked.indexOf(selectedChip) >= picked.length - 1;
+      if (focusId) $(`#strip .chip[data-id="${CSS.escape(focusId)}"]`)?.focus();
+    }
+    function move(id, delta) {
+      const from = picked.indexOf(id), to = from + delta;
+      if (from < 0 || to < 0 || to >= picked.length) return;
+      picked.splice(to, 0, picked.splice(from, 1)[0]);
+      selectedChip = id; sync(); renderStrip(id);
+      announce(`Moved to position ${to + 1} of ${picked.length}.`);
     }
     function toggle(id) {
       const i = picked.indexOf(id);
@@ -262,15 +341,63 @@
       pollTimer = setTimeout(async () => {
         sheets = await loadSheets();
         const found = sheets.find((s) => norm(s.url) === url);
-        if (found && current?.url === url) { setStatus('Photos loaded.'); renderList(url); }
+        if (found && current?.url === url) { setStatus('Photos loaded.'); renderList(current.i); }
         else poll(url, n + 1);
       }, 15000);
     }
     let deleteArmed = false;
     function resetDelete() { deleteArmed = false; $('#deleteBtn').classList.remove('armed'); $('#deleteBtn').textContent = 'Delete disc'; }
 
+    // ---------- tray: drag to reorder ----------
+    const strip = $('#strip');
+    let drag = null;
+    strip.addEventListener('pointerdown', (e) => {
+      const chip = e.target.closest('.chip'); if (!chip || e.button > 0) return;
+      drag = { chip, id: chip.dataset.id, x: e.clientX, y: e.clientY, on: false, pointer: e.pointerId };
+    });
+    strip.addEventListener('pointermove', (e) => {
+      if (!drag || e.pointerId !== drag.pointer) return;
+      if (!drag.on) {
+        if (Math.abs(e.clientX - drag.x) < 6) { if (Math.abs(e.clientY - drag.y) > 10) drag = null; return; }
+        drag.on = true; drag.chip.classList.add('dragging'); strip.classList.add('dragging');
+        try { drag.chip.setPointerCapture(e.pointerId); } catch {}
+      }
+      e.preventDefault();
+      // keep the strip scrolling when dragging near its edges
+      const r = strip.getBoundingClientRect();
+      if (e.clientX < r.left + 40) strip.scrollLeft -= 12; else if (e.clientX > r.right - 40) strip.scrollLeft += 12;
+      const others = [...strip.querySelectorAll('.chip:not(.dragging)')];
+      const before = others.find((c) => { const b = c.getBoundingClientRect(); return e.clientX < b.left + b.width / 2; });
+      if (before) { if (drag.chip.nextElementSibling !== before) strip.insertBefore(drag.chip, before); }
+      else if (strip.lastElementChild !== drag.chip) strip.appendChild(drag.chip);
+    });
+    function endDrag(cancel) {
+      if (!drag) return;
+      const d = drag; drag = null;
+      if (!d.on) return;
+      d.chip.classList.remove('dragging'); strip.classList.remove('dragging');
+      d.chip.dataset.dragged = '1';
+      if (!cancel) picked = [...strip.querySelectorAll('.chip')].map((c) => c.dataset.id);
+      selectedChip = d.id; sync();
+      announce(`Moved to position ${picked.indexOf(d.id) + 1} of ${picked.length}.`);
+    }
+    strip.addEventListener('pointerup', () => endDrag(false));
+    strip.addEventListener('pointercancel', () => endDrag(true));
+    strip.addEventListener('click', (e) => {
+      const chip = e.target.closest('.chip'); if (!chip || chip.dataset.dragged) return;
+      selectedChip = selectedChip === chip.dataset.id ? null : chip.dataset.id; renderStrip(chip.dataset.id);
+    });
+    strip.addEventListener('keydown', (e) => {
+      const chip = e.target.closest('.chip'); if (!chip) return;
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { e.preventDefault(); move(chip.dataset.id, e.key === 'ArrowLeft' ? -1 : 1); }
+      else if (e.key === 'Home' || e.key === 'End') { e.preventDefault(); move(chip.dataset.id, e.key === 'Home' ? -picked.length : picked.length - 1 - picked.indexOf(chip.dataset.id)); }
+    });
+    $('#moveL').addEventListener('click', () => move(selectedChip, -1));
+    $('#moveR').addEventListener('click', () => move(selectedChip, 1));
+
     // ---------- actions ----------
-    $('#album').addEventListener('change', (e) => choose(entries()[Number(e.target.value)] || null));
+    $('#album').addEventListener('change', (e) => choose(entries().find((x) => x.i === Number(e.target.value)) || null));
+    document.querySelectorAll('.seg button').forEach((b) => b.addEventListener('click', () => { size = b.dataset.size; try { localStorage.setItem('dt-picker-size', size); } catch {} renderGrid(); }));
     $('#first').addEventListener('click', () => { picked = current.sheet.photos.slice(0, MAX).map((p) => p.id); sync(); });
     $('#liked').addEventListener('click', () => { picked = current.sheet.photos.filter((p) => p.likes).slice(0, MAX).map((p) => p.id); sync(); });
     $('#clear').addEventListener('click', () => { picked = []; sync(); });
@@ -281,12 +408,12 @@
     });
     $('#save').addEventListener('click', async () => {
       if (!picked.length) return setStatus('Select at least one photo first.');
-      const url = current.url, title = current.title || current.sheet?.name || 'disc';
+      const e = current, title = label(e), before = savedOrder.slice(), after = picked.slice();
       $('#save').disabled = true; setStatus('Saving…', true);
       try {
-        await commit(`Picker: choose ${picked.length} photos for ${title}`, (d) => { const disc = (d.discs || []).find((x) => norm(x.album) === url); if (!disc) throw new Error('That disc was removed in Pages CMS.'); disc.photos = picked.join(', '); });
-        setStatus(`Saved ${picked.length} photos to ${title}. The site updates in about a minute.`);
-        renderList(url);
+        await commit(`Picker: choose ${after.length} photos for ${title}`, (d) => { const x = discIn(d, e); x.photos = after.join(', '); reorderFrames(x, before, after); });
+        setStatus(`Saved ${after.length} photos to ${title}. The site updates in about a minute.`);
+        renderList(e.i);
       } catch (err) { setStatus(err.message, true); }
       finally { $('#save').disabled = false; }
     });
@@ -303,37 +430,55 @@
       const url = norm($('#newUrl').value), title = $('#newTitle').value.trim(), pack = packFrom($('#newPack'), $('#newPackName'));
       if (!/^https:\/\/(adobe\.ly|lightroom\.adobe\.com|(www\.)?icloud\.com\/sharedalbum)\//i.test(url)) return ($('#addErr').textContent = 'Paste a Lightroom share link (https://adobe.ly/…) or an iCloud shared album link (https://www.icloud.com/sharedalbum/#…).');
       if ($('#newPack').value === '__new' && !pack) return ($('#addErr').textContent = 'Type a name for the new pack.');
-      if (entries().some((x) => x.url === url)) return ($('#addErr').textContent = 'That album is already a disc.');
+      const again = entries().some((x) => x.url === url);
       try {
         setStatus('Adding disc…', true);
-        await commit(`Picker: add disc ${title || url}`, (d) => { ensurePack(d, pack); d.discs = d.discs || []; const disc = { album: url }; if (title) disc.title = title; if (pack) disc.pack = pack; d.discs.push(disc); });
+        let index = -1;
+        await commit(`Picker: add disc ${title || url}`, (d) => { ensurePack(d, pack); d.discs = d.discs || []; const disc = { album: url }; if (title) disc.title = title; if (pack) disc.pack = pack; d.discs.push(disc); index = d.discs.length - 1; });
         $('#addPanel').hidden = true; $('#newUrl').value = ''; $('#newTitle').value = '';
-        setStatus('Disc added. Loading its photos — about a minute.');
-        renderList(url);
+        setStatus(again ? 'Added another disc from an album you already use.' : 'Disc added. Loading its photos — about a minute.');
+        renderList(index);
       } catch (err) { $('#addErr').textContent = err.message; setStatus(''); }
     });
-    $('#discPanel').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const url = current.url, title = $('#editTitle').value.trim(), pack = packFrom($('#editPack'), $('#editPackName'));
+    // A second (third…) disc from the same album: starts with no picks and a numbered name to rename.
+    function nextName(base) {
+      const root = base.replace(/\s+\d+$/, '') || 'Disc', used = new Set(entries().map(label));
+      let n = 2; while (used.has(`${root} ${n}`)) n++;
+      return `${root} ${n}`;
+    }
+    $('#dupBtn').addEventListener('click', async () => {
+      const e = current; if (!e) return;
+      const title = nextName(label(e));
+      try {
+        setStatus('Adding disc…', true);
+        let index = -1;
+        await commit(`Picker: add disc ${title} from the same album`, (d) => { const x = discIn(d, e); const disc = { title, album: x.album }; if (x.pack) disc.pack = x.pack; d.discs.splice(e.i + 1, 0, disc); index = e.i + 1; });
+        setStatus(`Added ${title}. Pick its photos, then Save to disc.`);
+        renderList(index); picked = []; sync(); $('#editTitle').focus();
+      } catch (err) { setStatus(err.message, true); }
+    });
+    $('#discPanel').addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const e = current, title = $('#editTitle').value.trim(), pack = packFrom($('#editPack'), $('#editPackName'));
       if ($('#editPack').value === '__new' && !pack) return ($('#editErr').textContent = 'Type a name for the new pack.');
       try {
         setStatus('Saving…', true);
-        await commit(`Picker: update ${title || url}`, (d) => { ensurePack(d, pack); const disc = (d.discs || []).find((x) => norm(x.album) === url); if (!disc) throw new Error('That disc was removed in Pages CMS.'); if (title) disc.title = title; else delete disc.title; if (pack) disc.pack = pack; else delete disc.pack; });
-        setStatus('Saved. The site updates in about a minute.'); renderList(url);
+        await commit(`Picker: update ${title || e.url}`, (d) => { ensurePack(d, pack); const x = discIn(d, e); if (title) x.title = title; else delete x.title; if (pack) x.pack = pack; else delete x.pack; });
+        setStatus('Saved. The site updates in about a minute.'); renderList(e.i);
       } catch (err) { $('#editErr').textContent = err.message; setStatus(''); }
     });
     $('#deleteBtn').addEventListener('click', async () => {
       if (!deleteArmed) { deleteArmed = true; $('#deleteBtn').classList.add('armed'); $('#deleteBtn').textContent = 'Click again to delete'; setTimeout(resetDelete, 4000); return; }
-      const url = current.url, title = current.title || 'disc';
+      const e = current, title = e.title || 'disc';
       try {
         setStatus('Deleting…', true);
-        await commit(`Picker: delete disc ${title}`, (d) => { d.discs = (d.discs || []).filter((x) => norm(x.album) !== url); });
-        setStatus(`Deleted ${title}. It leaves the site in about a minute.`); renderList('');
+        await commit(`Picker: delete disc ${title}`, (d) => { discIn(d, e); d.discs.splice(e.i, 1); });
+        setStatus(`Deleted ${title}. It leaves the site in about a minute.`); renderList(Math.max(0, e.i - 1));
       } catch (err) { setStatus(err.message, true); }
     });
 
     $('#connBtn').addEventListener('click', () => {
-      if (token) { token = ''; try { localStorage.removeItem('dt-picker-token'); } catch {} cms = null; sheets = []; renderConn(); renderList(''); setStatus('Disconnected. The key was removed from this browser.'); return; }
+      if (token) { token = ''; try { localStorage.removeItem('dt-picker-token'); } catch {} cms = null; sheets = []; renderConn(); renderList(-1); setStatus('Disconnected. The key was removed from this browser.'); return; }
       $('#tokenErr').textContent = ''; $('#tokenInput').value = ''; $('#connDialog').showModal();
     });
     $('#lockBtn').addEventListener('click', () => { $('#tokenErr').textContent = ''; $('#tokenInput').value = ''; $('#connDialog').showModal(); });
@@ -346,7 +491,7 @@
       try {
         const r = await readCms(); cms = r.data;
         try { localStorage.setItem('dt-picker-token', t); } catch {}
-        $('#connDialog').close(); renderConn(); sheets = await loadSheets(); renderList(current?.url); setStatus('Connected. You can add albums and save from here.');
+        $('#connDialog').close(); renderConn(); sheets = await loadSheets(); renderList(current?.i ?? -1); setStatus('Connected. You can add albums and save from here.');
       } catch (err) { token = ''; $('#tokenErr').textContent = err.message; }
     });
 
@@ -355,7 +500,7 @@
       if (token) { try { cms = (await readCms()).data; } catch (err) { $('#lockMsg').textContent = `${err.message} Click Disconnect, then connect with a new key.`; } }
       renderConn();
       sheets = await loadSheets();
-      renderList('');
+      renderList(-1);
     })();
   </script>
 </body>
