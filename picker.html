@@ -102,6 +102,23 @@
     body.locked .lock { display:block; }
     body.locked main > :not(.lock), body.locked .tray { display:none !important; }
     main:focus { outline:none; }
+    /* organizer: every disc, grouped by pack; discs from one album sit together as a set */
+    main { display:grid; grid-template-columns:260px minmax(0,1fr); column-gap:28px; align-items:start; }
+    main > * { grid-column:2; min-width:0; }
+    main > .lock { grid-column:1 / -1; }
+    .org { grid-column:1; grid-row:1 / span 12; position:sticky; top:12px; max-height:calc(100vh - var(--tray,170px) - 36px); overflow-y:auto; margin-top:16px; padding:4px 10px 10px; background:var(--panel); border:1px solid var(--line); border-radius:10px; scrollbar-width:thin; }
+    .org summary { display:flex; align-items:center; justify-content:space-between; gap:10px; min-height:44px; cursor:pointer; font-size:11px; letter-spacing:.14em; text-transform:uppercase; }
+    .org summary:focus-visible { outline:3px solid var(--gold); outline-offset:-3px; }
+    .org h2 { margin:14px 0 4px; font-size:11px; font-weight:400; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+    .org ul { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:4px; }
+    .org-disc { display:flex; width:100%; align-items:center; justify-content:space-between; gap:8px; text-align:left; background:none; border-color:transparent; }
+    .org-disc .k { color:var(--muted); font-size:11px; white-space:nowrap; }
+    .org-disc[aria-current="true"] { background:#2a1d1b; border-color:var(--line); box-shadow:inset 3px 0 0 var(--red); color:#fff; }
+    .org-set { margin:2px 0 2px 6px; padding-left:8px; border-left:2px solid var(--line); }
+    .org-set > p { display:flex; justify-content:space-between; gap:8px; margin:6px 0 4px 12px; font-size:12px; }
+    .org-set > p span { color:var(--muted); font-size:11px; }
+    .org-add { width:100%; text-align:left; color:var(--muted); background:none; border-style:dashed; }
+    @media (max-width:900px) { main { display:block; } .org { position:static; max-height:none; } }
   </style>
 </head>
 <body class="locked">
@@ -110,12 +127,11 @@
     <header class="topbar"><a class="site-title" href="/">DANIEL TREGO</a><div class="conn" id="conn"><span class="dot" aria-hidden="true"></span><span id="connText">Not connected</span><button type="button" id="connBtn">Connect GitHub</button></div></header>
     <main id="main" tabindex="-1">
     <section class="lock" aria-labelledby="lockTitle"><h1 id="lockTitle">PRIVATE PHOTO PICKER</h1><p>The photo picker is for the site owner. Connect with your GitHub key to continue.</p><button type="button" class="primary" id="lockBtn">Connect GitHub</button><p class="err" id="lockMsg" role="alert" style="margin-top:14px"></p></section>
+    <details class="org" id="org"><summary><span id="orgTitle">Discs</span><span class="count" id="orgNow"></span></summary><nav id="orgList" aria-labelledby="orgTitle"></nav></details>
     <h1 class="page-mark"><b>Photo picker</b> <span>CHOOSE THE FRAMES.</span></h1>
     <p class="help" id="help">Add a Lightroom or iCloud shared album, click photos in the order you want them on the disc (up to 14), drag them into order in the tray, then save. The site updates about a minute later.</p>
 
     <div class="bar">
-      <label for="album" class="count">Disc</label>
-      <select id="album"></select>
       <button type="button" id="addBtn">+ Add album</button>
       <button type="button" id="first">First 14</button>
       <button type="button" id="liked">Select liked</button>
@@ -259,11 +275,27 @@
     }
     function renderList(keepIndex) {
       const list = entries();
-      const counts = {};
-      $('#album').innerHTML = list.length ? list.map((e) => { const l = label(e); counts[l] = (counts[l] || 0) + 1; return `<option value="${e.i}">${esc(l)}${counts[l] > 1 ? ` (${counts[l]})` : ''}${e.sheet ? '' : ' (loading…)'}</option>`; }).join('') : '<option>No discs yet</option>';
-      const entry = list.find((e) => e.i === keepIndex) || list[0] || null;
-      if (entry) $('#album').value = String(entry.i);
-      choose(entry);
+      choose(list.find((e) => e.i === keepIndex) || list[0] || null);
+    }
+    // Organizer: packs in order, then discs with no pack. Discs that share an album (within a pack) form a set.
+    function organizer(list) {
+      const names = packNames(), packs = new Map(names.map((n) => [n, new Map()]));
+      for (const e of list) { const k = e.pack || ''; if (!packs.has(k)) packs.set(k, new Map()); const sets = packs.get(k); if (!sets.has(e.url)) sets.set(e.url, []); sets.get(e.url).push(e); }
+      const none = packs.get(''); packs.delete(''); if (none) packs.set('', none);
+      return [...packs].filter(([, sets]) => sets.size).map(([pack, sets]) => ({ pack, sets: [...sets.values()] }));
+    }
+    function renderOrg(focus) {
+      const list = entries();
+      const picks = (e) => (e.sheet ? `${parsePicks(e.photos).length || 'first ' + MAX}` : 'loading…');
+      const disc = (e, name) => `<li><button type="button" class="org-disc" data-i="${e.i}"${current && e.i === current.i ? ' aria-current="true"' : ''}><span>${esc(name)}</span><span class="k">${picks(e)}</span></button></li>`;
+      $('#orgTitle').textContent = `Discs (${list.length})`;
+      $('#orgNow').textContent = current ? label(current) : '';
+      $('#orgList').innerHTML = list.length ? organizer(list).map((g) => `<h2>${esc(g.pack || 'No pack')}</h2><ul>${g.sets.map((set) => {
+        if (set.length < 2) return disc(set[0], label(set[0]));
+        const root = label(set[0]).replace(/\s+\d+$/, '') || label(set[0]);
+        return `<li class="org-set"><p>${esc(root)} <span>set of ${set.length}</span></p><ul>${set.map((e) => disc(e, label(e))).join('')}<li><button type="button" class="org-add" data-add="${set[set.length - 1].i}" aria-label="Add another disc to the ${esc(root)} set">+ Another disc</button></li></ul></li>`;
+      }).join('')}</ul>`).join('') : '<p class="empty" style="padding:12px 0">No discs yet.</p>';
+      if (focus && current) $(`#orgList [data-i="${current.i}"]`)?.focus();
     }
     function choose(entry) {
       current = entry; clearTimeout(pollTimer); selectedChip = null;
@@ -279,6 +311,7 @@
       savedOrder = picked.slice();
       renderGrid();
       if (entry && !entry.sheet) poll(entry.url, 0);
+      renderOrg();
     }
     const photoById = (id) => current?.sheet?.photos.find((x) => x.id === id);
     function captionFor(id) {
@@ -403,7 +436,13 @@
     $('#moveR').addEventListener('click', () => move(selectedChip, 1));
 
     // ---------- actions ----------
-    $('#album').addEventListener('change', (e) => choose(entries().find((x) => x.i === Number(e.target.value)) || null));
+    $('#orgList').addEventListener('click', (ev) => {
+      const pick = ev.target.closest('[data-i]'), add = ev.target.closest('[data-add]');
+      const find = (b, key) => entries().find((x) => x.i === Number(b.dataset[key]));
+      if (pick) { choose(find(pick, 'i') || null); if (!wide.matches) { $('#org').open = false; $('#org summary').focus(); } else renderOrg(true); }
+      else if (add) addFromAlbum(find(add, 'add'));
+    });
+    const wide = matchMedia('(min-width: 901px)'); $('#org').open = wide.matches;
     document.querySelectorAll('.seg button').forEach((b) => b.addEventListener('click', () => { size = b.dataset.size; try { localStorage.setItem('dt-picker-size', size); } catch {} renderGrid(); }));
     $('#first').addEventListener('click', () => { picked = current.sheet.photos.slice(0, MAX).map((p) => p.id); sync(); });
     $('#liked').addEventListener('click', () => { picked = current.sheet.photos.filter((p) => p.likes).slice(0, MAX).map((p) => p.id); sync(); });
@@ -441,7 +480,7 @@
       try {
         setStatus('Adding disc…', true);
         let index = -1;
-        await commit(`Picker: add disc ${title || url}`, (d) => { ensurePack(d, pack); d.discs = d.discs || []; const disc = { album: url }; if (title) disc.title = title; if (pack) disc.pack = pack; d.discs.push(disc); index = d.discs.length - 1; });
+        await commit(`Picker: add disc ${title || url}`, (d) => { ensurePack(d, pack); d.discs = d.discs || []; const disc = { album: url }; if (title) disc.title = title; if (pack) disc.pack = pack; const at = d.discs.map((x) => norm(x?.album)).lastIndexOf(url); /* keep discs from one album together */ if (at >= 0) { d.discs.splice(at + 1, 0, disc); index = at + 1; } else { d.discs.push(disc); index = d.discs.length - 1; } });
         $('#addPanel').hidden = true; $('#newUrl').value = ''; $('#newTitle').value = '';
         setStatus(again ? 'Added another disc from an album you already use.' : 'Disc added. Loading its photos — about a minute.');
         renderList(index);
@@ -453,8 +492,9 @@
       let n = 2; while (used.has(`${root} ${n}`)) n++;
       return `${root} ${n}`;
     }
-    $('#dupBtn').addEventListener('click', async () => {
-      const e = current; if (!e) return;
+    $('#dupBtn').addEventListener('click', () => addFromAlbum(current));
+    async function addFromAlbum(e) {
+      if (!e) return;
       const title = nextName(label(e));
       try {
         setStatus('Adding disc…', true);
@@ -463,7 +503,7 @@
         setStatus(`Added ${title}. Pick its photos, then Save to disc.`);
         renderList(index); picked = []; sync(); $('#editTitle').focus();
       } catch (err) { setStatus(err.message, true); }
-    });
+    }
     $('#discPanel').addEventListener('submit', async (ev) => {
       ev.preventDefault();
       const e = current, title = $('#editTitle').value.trim(), pack = packFrom($('#editPack'), $('#editPackName'));

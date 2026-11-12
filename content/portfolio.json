@@ -420,6 +420,10 @@
           "date": "2019"
         }
       ],
+      "set": "game-over-disc_05",
+      "setTitle": "Game Over",
+      "part": 1,
+      "parts": 2,
       "slug": "game-over"
     },
     {
@@ -492,6 +496,10 @@
           "date": "2019"
         }
       ],
+      "set": "game-over-disc_05",
+      "setTitle": "Game Over",
+      "part": 2,
+      "parts": 2,
       "slug": "game-over-2"
     },
     {
