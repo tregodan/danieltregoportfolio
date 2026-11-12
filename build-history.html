@@ -79,16 +79,16 @@
   <header class="topbar">
     <a class="site-title" href="/">DANIEL TREGO</a>
     <div class="page-mark"><span class="page-name">BUILD HISTORY</span><span class="page-tag">FRAME BY FRAME.</span></div>
-    <nav class="site-nav" aria-label="Primary navigation"><a href="/portfolio/">PHOTO</a><a href="/high-scores.html">HIGH SCORES</a></nav>
+    <nav class="site-nav" aria-label="Primary navigation"><a href="/portfolio/">PHOTO</a></nav>
   </header>
 
   <main id="main-content" tabindex="-1">
   <div class="sleeve">
     <div class="band" aria-hidden="true"></div>
     <article>
-      <div class="kicker">Case study · Nov 5–9, 2026</div>
+      <div class="kicker">Case study · Nov 5–11, 2026</div>
       <h1>Frame by Frame</h1>
-      <p class="lede">In five days, a static View-Master mockup became a working photo portfolio. Photos come from Lightroom or Apple Photos, get chosen in a picker, and publish on their own.</p>
+      <p class="lede">In a week, a static View-Master mockup became a working photo portfolio. Photos come from Lightroom or Apple Photos, get chosen in a picker, and publish on their own.</p>
       <p>The idea: a portfolio you <em>load</em> rather than scroll. Each series is a cardboard reel, each photo a frame, and you advance by pulling the lever. The work had two halves: designing a viewer that feels physical without getting in the way of the photos, and building a back office simple enough to keep it full.</p>
 
       <div class="table-wrap" tabindex="0" role="region" aria-label="Table 1, scrolls sideways on small screens"><table>
@@ -98,6 +98,8 @@
           <tr><th scope="row">Photos</th><td>Image links typed in by hand</td><td>Paste a Lightroom or iCloud shared album link; a picker chooses up to 14 frames per disc</td></tr>
           <tr><th scope="row">Publishing</th><td>Manual</td><td>A save publishes in 1–2 minutes; albums refresh daily</td></tr>
           <tr><th scope="row">Sharing</th><td>None</td><td>Reel links with preview cards and the system share sheet</td></tr>
+          <tr><th scope="row">Many discs</th><td>A flat list of reels</td><td>Packs, with discs from one album grouped into sets on the shelf and in the picker</td></tr>
+          <tr><th scope="row">Accessibility</th><td>Not audited</td><td>Checked against WCAG 2.2 AA and AAA across every page</td></tr>
         </tbody>
       </table></div>
       <p>About 35 viewer iterations shipped. Almost every one came from a review of the live page, often after a round of mockups.</p>
@@ -116,12 +118,10 @@
           <tr><th scope="row">Packs above discs</th><td>Long projects need several reels; a disc names its pack, so nothing is listed twice</td><td>Kept</td></tr>
           <tr><th scope="row">Fixed 3:2 and 2:3 shells, photos cropped to fill</th><td>A shell that changed size with every photo felt broken</td><td>Replaced: photos keep their own shape, with no resize animation</td></tr>
           <tr><th scope="row">Optional metadata, empty labels hidden</th><td>No empty scaffolding around the photos</td><td>Kept; only the caption sits on the mount, the rest is in INFO</td></tr>
-          <tr><th scope="row">High Scores as a second page</th><td>Writing, teaching, research and web work don't fit inside photo reels</td><td>Kept</td></tr>
           <tr><th scope="row">Private source repo, generated public site</th><td>CMS settings and raw media shouldn't be public</td><td>Kept, and extended with the picker and daily album refresh</td></tr>
           <tr><th scope="row">Lightroom albums would need an Adobe login (OAuth)</th><td>A public site can't hold Adobe secrets</td><td>Avoided: public share links turned out to be readable with no login</td></tr>
         </tbody>
       </table></div>
-      <figure><img src="build-history/v1-high-scores-mockup.jpg" alt="High Scores mockup: an arcade cabinet screen listing work by category, with four coloured buttons" loading="lazy" width="1344" height="762"><figcaption>High Scores: an arcade-screen index for the work that isn't photographs.</figcaption></figure>
       <figure><img src="build-history/v1-publishing-architecture.jpg" alt="Publishing architecture: private source with Pages CMS, content, media and scripts feeds a build step that publishes only the renderable site to public GitHub Pages" loading="lazy" width="1344" height="471"><figcaption>The publishing split v1 settled on. It still holds.</figcaption></figure>
       <p>v1 also listed what it hadn't settled: cropping versus showing the whole photo, how to sync Lightroom, square reels, a random mode across packs, and where captions should come from. The build below answered two: photos keep their own shape, and albums sync from share links. Captions from album metadata, square reels and a random mode are still open.</p>
 
@@ -221,6 +221,31 @@
         </tbody>
       </table></div>
       <figure class="shot"><img src="build-history/06-endcard.jpg" alt="The end-of-reel card offering replay or loading the next disc" loading="lazy" width="800" height="500"><figcaption>The end-of-reel card, shown after the last frame.</figcaption></figure>
+
+      <h2>Accessibility</h2>
+      <p>On Nov 11 every page was checked against WCAG 2.2 at both AA and AAA, with scripted tests in Chrome. The rule was to fix the design without changing how it looks or feels: no new chrome around the photos, and the same calm player.</p>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Table 5, scrolls sideways on small screens"><table>
+        <thead><tr><th scope="col">Area</th><th scope="col">What changed</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Contrast</th><td>Text reaches 7:1 (4.5:1 for large text). Red text on the dark page uses a lighter red, and the viewer's buttons sit in a dark recess so their labels read on both the red and blue bodies.</td></tr>
+          <tr><th scope="row">Touch targets</th><td>Every control has a 44×44 target. Small buttons keep their drawn size and get an invisible hit area, and none of the hit areas overlap.</td></tr>
+          <tr><th scope="row">Keyboard</th><td>Arrows, Space and Esc always work. Single-letter shortcuts can be turned off in the shortcuts dialog. The focus ring is two-tone, so it shows on dark, red, blue and cream.</td></tr>
+          <tr><th scope="row">Screen readers</th><td>Discs on the shelf are real buttons. Each frame can carry a written description, read before its caption, with a "frame N of M" fallback.</td></tr>
+          <tr><th scope="row">Structure</th><td>One main heading per page, landmarks, and a skip link first.</td></tr>
+          <tr><th scope="row">Motion and zoom</th><td>Reduced-motion settings turn off all animation. Pages hold up at 320px wide, 200% zoom and widened text spacing.</td></tr>
+        </tbody>
+      </table></div>
+      <p>The phone face was the main worry. It now carries 11 controls, each with its own 44px target, which is tight but doesn't overlap. Dropping the red and blue colour dots on phones is the cheapest way to free room if it's needed. Not yet done: a pass with a real screen reader.</p>
+
+      <h2>Many discs: packs and sets</h2>
+      <p>One Lightroom album can feed several discs, and a long shelf gets hard to scan. The answer was to build on packs instead of adding another level.</p>
+      <ul>
+        <li><strong>Packs</strong> are the named sections of the shelf.</li>
+        <li><strong>Sets.</strong> Discs in a pack that share an album link become a set automatically, with no extra field to fill in. The build keeps them together and numbers them as parts.</li>
+        <li><strong>On the shelf</strong> a set is one stacked reel. It opens into its discs while one of them is loaded.</li>
+        <li><strong>In the picker</strong> a left-hand organizer lists every disc by pack, with sets indented and a "+ Another disc" button on each. Several discs can be cut from one album.</li>
+        <li><strong>Tray.</strong> Photos reorder by drag or arrow keys, and captions move with them. Large and Viewer size previews show each photo in the viewer's mat.</li>
+      </ul>
 
       <h2>Behind the scenes</h2>
       <p>Everything authored lives in one private source; the public site is generated from it, so there's one place to edit and nothing to keep in sync by hand.</p>
