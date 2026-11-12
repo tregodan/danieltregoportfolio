@@ -4,31 +4,34 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="robots" content="noindex, nofollow">
   <title>Photo picker — Daniel Trego</title>
   <meta name="robots" content="noindex, nofollow">
   <style>
-    :root { --bg:#151515; --panel:#1d1d1d; --line:#2e2e2e; --paper:#ece7dc; --muted:#9a948a; --red:#d4473a; --teal:#3e6b79; --gold:#ffd45c; --ok:#8fc98f; }
+    :root { --bg:#151515; --panel:#1d1d1d; --line:#2e2e2e; --paper:#ece7dc; --muted:#b3ada2; --red:#d4473a; --red-text:#f28b7d; --red-fill:#a32219; --teal:#2f5461; --gold:#ffd45c; --ok:#8fc98f; }
     * { box-sizing:border-box; }
     body { margin:0; background:var(--bg); color:var(--paper); font:14px/1.5 ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace; }
-    .shell { max-width:1280px; margin:0 auto; padding:18px 24px 190px; }
+    .shell { max-width:1280px; margin:0 auto; padding:18px 24px calc(var(--tray,170px) + 24px); }
+    html { scroll-padding-bottom:calc(var(--tray,170px) + 16px); }
     .topbar { display:flex; justify-content:space-between; align-items:center; gap:12px; padding-bottom:14px; border-bottom:1px solid var(--line); }
     .site-title { color:var(--paper); text-decoration:none; font:28px/1 Impact,Haettenschweiler,"Arial Narrow Bold",sans-serif; }
-    .page-mark { display:flex; gap:12px; align-items:baseline; padding:16px 0 4px; font-size:11px; text-transform:uppercase; }
-    .page-mark b { color:var(--red); font-weight:400; letter-spacing:.14em; }
+    .page-mark { display:flex; gap:12px; align-items:baseline; margin:0; padding:16px 0 4px; font-size:11px; font-weight:400; text-transform:uppercase; }
+    .page-mark b { color:var(--red-text); font-weight:400; letter-spacing:.14em; }
     .page-mark span { font-size:15px; letter-spacing:.04em; }
     p.help { color:var(--muted); max-width:780px; margin:6px 0 18px; font-size:13px; }
     .bar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:14px; }
-    select,button,input { font:inherit; font-size:12px; color:var(--paper); background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:8px 12px; }
+    select,button,input { font:inherit; font-size:12px; color:var(--paper); background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:8px 12px; min-height:44px; }
     button { cursor:pointer; }
     input { min-width:0; }
-    input::placeholder { color:#6f6a62; }
+    input::placeholder { color:var(--muted); opacity:1; }
     button:hover,select:hover { border-color:#555; }
     button:disabled { opacity:.45; cursor:not-allowed; }
     button.primary { background:var(--teal); border-color:var(--teal); color:#fff; }
     button.danger { color:#ff9b8f; }
     button.danger.armed { background:#7a2a22; border-color:#a8463f; color:#fff; }
-    button:focus-visible,select:focus-visible,input:focus-visible,.tile:focus-visible,.chip:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
+    a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible { outline:3px solid var(--gold) !important; outline-offset:2px !important; box-shadow:0 0 0 2px #000, 0 0 0 7px #000 !important; }
+    .skip-link { position:fixed; left:12px; top:12px; z-index:1000; transform:translateY(-180%); padding:12px 14px; color:#171616; background:var(--gold); font-weight:700; text-decoration:none; }
+    .skip-link:focus { transform:translateY(0); }
+    .site-title { position:relative; display:inline-flex; align-items:center; min-height:44px; }
     .meta { color:var(--muted); font-size:12px; margin-left:auto; }
     .conn { font-size:12px; color:var(--muted); display:flex; gap:8px; align-items:center; }
     .conn .dot { width:8px; height:8px; border-radius:50%; background:#555; }
@@ -44,9 +47,9 @@
     .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; }
     .tile { position:relative; padding:0; border:2px solid transparent; border-radius:8px; background:#222; overflow:hidden; aspect-ratio:1; cursor:pointer; }
     .tile > img { width:100%; height:100%; object-fit:contain; display:block; background:#111; transition:opacity .15s; }
-    .tile .n { position:absolute; left:6px; top:6px; font-size:10px; background:rgba(0,0,0,.65); padding:1px 5px; border-radius:4px; color:#cfc9bd; }
-    .tile .likes { position:absolute; right:6px; top:6px; font-size:11px; background:rgba(0,0,0,.65); padding:1px 6px; border-radius:4px; color:#ff8a7a; }
-    .tile .order { position:absolute; right:8px; bottom:8px; width:30px; height:30px; border-radius:50%; display:none; place-items:center; background:var(--red); color:#fff; font-weight:700; font-size:13px; box-shadow:0 0 0 2px #151515; }
+    .tile .n { position:absolute; left:6px; top:6px; font-size:10px; background:#111; padding:1px 5px; border-radius:4px; color:#cfc9bd; }
+    .tile .likes { position:absolute; right:6px; top:6px; font-size:11px; background:#111; padding:1px 6px; border-radius:4px; color:#ff9b8f; }
+    .tile .order { position:absolute; right:8px; bottom:8px; width:30px; height:30px; border-radius:50%; display:none; place-items:center; background:var(--red-fill); color:#fff; font-weight:700; font-size:13px; box-shadow:0 0 0 2px #151515; }
     .tile[aria-pressed="true"] { border-color:var(--red); }
     .tile[aria-pressed="true"] .order { display:grid; }
     .grid.full .tile[aria-pressed="false"] img { opacity:.45; }
@@ -73,13 +76,13 @@
     .strip { display:flex; gap:8px; flex:1; min-width:160px; overflow-x:auto; padding:4px 2px 6px; scrollbar-width:thin; }
     .chip { container-type:inline-size; flex:none; width:104px; padding:0; border:2px solid transparent; border-radius:7px; background:none; position:relative; touch-action:pan-y; user-select:none; -webkit-user-select:none; }
     .chip .mat img { pointer-events:none; -webkit-user-drag:none; }
-    .chip .pos { position:absolute; left:-4px; top:-6px; min-width:18px; height:18px; padding:0 4px; border-radius:9px; background:var(--red); color:#fff; font-size:10px; line-height:18px; text-align:center; box-shadow:0 0 0 2px #151515; }
+    .chip .pos { position:absolute; left:-4px; top:-6px; min-width:18px; height:18px; padding:0 4px; border-radius:9px; background:var(--red-fill); color:#fff; font-size:10px; line-height:18px; text-align:center; box-shadow:0 0 0 2px #151515; }
     .chip[aria-pressed="true"] { border-color:var(--gold); }
     .chip.dragging { border-color:var(--gold); opacity:.85; cursor:grabbing; }
     .strip.dragging .chip:not(.dragging) { cursor:grabbing; }
-    .chip:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
     .movers { display:flex; gap:6px; }
-    .movers button { padding:8px 10px; }
+    .movers button { padding:8px 10px; min-width:44px; }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; } .spin { animation:none !important; border-top-color:#444; } }
     .sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
     .count { font-size:12px; color:var(--muted); white-space:nowrap; }
     .status { font-size:12px; color:var(--gold); width:100%; }
@@ -97,14 +100,17 @@
     .lock h1 { font-size:18px; letter-spacing:.12em; margin:0 0 10px; }
     .lock p { color:var(--muted); font-size:13px; margin:0 0 18px; }
     body.locked .lock { display:block; }
-    body.locked .shell > :not(.topbar):not(.lock), body.locked .tray { display:none !important; }
+    body.locked main > :not(.lock), body.locked .tray { display:none !important; }
+    main:focus { outline:none; }
   </style>
 </head>
 <body class="locked">
+  <a class="skip-link" href="#main">Skip to content</a>
   <div class="shell">
     <header class="topbar"><a class="site-title" href="/">DANIEL TREGO</a><div class="conn" id="conn"><span class="dot" aria-hidden="true"></span><span id="connText">Not connected</span><button type="button" id="connBtn">Connect GitHub</button></div></header>
-    <section class="lock" aria-labelledby="lockTitle"><h1 id="lockTitle">PRIVATE</h1><p>The photo picker is for the site owner. Connect with your GitHub key to continue.</p><button type="button" class="primary" id="lockBtn">Connect GitHub</button><p class="err" id="lockMsg" role="alert" style="margin-top:14px"></p></section>
-    <div class="page-mark"><b>Photo picker</b><span>CHOOSE THE FRAMES.</span></div>
+    <main id="main" tabindex="-1">
+    <section class="lock" aria-labelledby="lockTitle"><h1 id="lockTitle">PRIVATE PHOTO PICKER</h1><p>The photo picker is for the site owner. Connect with your GitHub key to continue.</p><button type="button" class="primary" id="lockBtn">Connect GitHub</button><p class="err" id="lockMsg" role="alert" style="margin-top:14px"></p></section>
+    <h1 class="page-mark"><b>Photo picker</b> <span>CHOOSE THE FRAMES.</span></h1>
     <p class="help" id="help">Add a Lightroom or iCloud shared album, click photos in the order you want them on the disc (up to 14), drag them into order in the tray, then save. The site updates about a minute later.</p>
 
     <div class="bar">
@@ -139,9 +145,10 @@
     </form>
 
     <div class="grid" id="grid" role="group" aria-label="Album photos"></div>
+    </main>
   </div>
 
-  <div class="tray">
+  <section class="tray" id="tray" aria-label="Photos chosen for this disc">
     <div class="tray-in">
       <span class="count" id="count" aria-live="polite">0 / 14 selected</span>
       <div class="strip" id="strip" role="group" aria-label="Photos on this disc, in order. Drag to reorder, or select one and use the arrow keys."></div>
@@ -151,20 +158,20 @@
       <p class="status" id="status" role="status"></p>
       <p class="sr-only" id="announce" aria-live="assertive"></p>
     </div>
-  </div>
+  </section>
 
   <dialog id="connDialog" aria-labelledby="connTitle">
     <form method="dialog" id="connForm">
       <h2 id="connTitle">Connect the picker to GitHub</h2>
       <p class="note" style="margin-top:0">One-time setup so the picker can save discs for you. The key stays in this browser only.</p>
       <ol>
-        <li>Open <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub → New fine-grained token</a>.</li>
+        <li>Open <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub → New fine-grained token (opens in a new tab)</a>.</li>
         <li>Name it <strong>Portfolio picker</strong> and pick an expiration (1 year is fine).</li>
         <li>Under <strong>Repository access</strong>, choose <strong>Only select repositories</strong> → <strong>tregodan/danieltrego</strong>.</li>
         <li>Under <strong>Permissions → Repository permissions</strong>, set <strong>Contents</strong> to <strong>Read and write</strong>.</li>
         <li>Click <strong>Generate token</strong>, copy it, and paste it below.</li>
       </ol>
-      <div class="row"><input id="tokenInput" type="password" autocomplete="off" placeholder="github_pat_…" aria-label="GitHub token"><button type="submit" class="primary" id="tokenSave" value="save">Connect</button><button type="button" id="tokenCancel">Cancel</button></div>
+      <div class="row"><input id="tokenInput" type="password" placeholder="github_pat_…" aria-label="GitHub token"><button type="submit" class="primary" id="tokenSave" value="save">Connect</button><button type="button" id="tokenCancel">Cancel</button></div>
       <p class="err" id="tokenErr" role="alert"></p>
     </form>
   </dialog>
@@ -468,7 +475,7 @@
       } catch (err) { $('#editErr').textContent = err.message; setStatus(''); }
     });
     $('#deleteBtn').addEventListener('click', async () => {
-      if (!deleteArmed) { deleteArmed = true; $('#deleteBtn').classList.add('armed'); $('#deleteBtn').textContent = 'Click again to delete'; setTimeout(resetDelete, 4000); return; }
+      if (!deleteArmed) { deleteArmed = true; $('#deleteBtn').classList.add('armed'); $('#deleteBtn').textContent = 'Click again to delete'; announce('Delete is armed. Activate the button again to delete this disc, or press Escape to cancel.'); return; }
       const e = current, title = e.title || 'disc';
       try {
         setStatus('Deleting…', true);
@@ -476,6 +483,12 @@
         setStatus(`Deleted ${title}. It leaves the site in about a minute.`); renderList(Math.max(0, e.i - 1));
       } catch (err) { setStatus(err.message, true); }
     });
+
+    $('#deleteBtn').addEventListener('blur', resetDelete);
+    $('#deleteBtn').addEventListener('keydown', (e) => { if (e.key === 'Escape' && deleteArmed) { resetDelete(); announce('Delete cancelled.'); } });
+    // keep keyboard focus clear of the fixed tray (2.4.11 / 2.4.12)
+    const trayEl = $('#tray'); const traySize = () => document.documentElement.style.setProperty('--tray', `${trayEl.offsetHeight}px`);
+    if (window.ResizeObserver) new ResizeObserver(traySize).observe(trayEl); traySize();
 
     $('#connBtn').addEventListener('click', () => {
       if (token) { token = ''; try { localStorage.removeItem('dt-picker-token'); } catch {} cms = null; sheets = []; renderConn(); renderList(-1); setStatus('Disconnected. The key was removed from this browser.'); return; }
